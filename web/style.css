@@ -89,65 +89,30 @@ body {
   margin-right: auto;
 }
 
-/* Hero CTA - zooms in from nothing at center as garnet keys scatter away */
+/* Hero CTA - zooms in as garnet keys scatter away */
 .hero-cta {
   position: absolute;
   top: 50%;
   left: 50%;
+  width: 100vw;
+  height: 100vh;
   transform: translate(-50%, -50%) scale(0.3);
-  text-align: center;
+  transform-origin: left center;
   opacity: 0;
   will-change: opacity, transform;
   z-index: 1;
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
-.hero-cta p {
-  font-size: clamp(32px, 5vw, 64px);
-  font-weight: 800;
-  color: var(--text-primary);
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-  margin-bottom: 20px;
-}
-
-.hero-cta .garnet-text {
-  color: var(--garnet);
-}
-
-.hero-cta .section-label {
-  margin-bottom: 16px;
-}
-
-.hero-cta .value-title {
-  font-size: clamp(28px, 4.5vw, 52px);
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  color: var(--text-primary);
-  line-height: 1.1;
-  margin-bottom: 20px;
-}
-
-.value-subtitle-hero {
-  font-size: clamp(14px, 1.6vw, 18px);
-  color: var(--text-secondary);
-  line-height: 1.7;
-  max-width: 560px;
-}
-
-.hero-cta a {
-  display: inline-block;
-  font-size: clamp(16px, 2vw, 24px);
-  font-weight: 700;
-  color: var(--garnet);
-  text-decoration: none;
-  border-bottom: 2.5px solid var(--garnet);
-  padding-bottom: 4px;
-  transition: opacity 0.2s;
-}
-
-.hero-cta a:hover {
-  opacity: 0.7;
+.hero-cta-inner {
+  max-width: 1080px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 80px);
+  text-align: left;
 }
 
 .hero-cta.visible {
