@@ -158,9 +158,8 @@ body {
   cursor: default;
   will-change: transform, opacity;
   transition: none;
-  flex: 1;
+  flex: 0 0 clamp(48px, 8vw, 88px);
   aspect-ratio: 1 / 1;
-  max-width: 100px;
 }
 
 .key--wire {
