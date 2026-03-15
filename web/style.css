@@ -89,12 +89,12 @@ body {
   margin-right: auto;
 }
 
-/* Hero CTA — rises from below when garnet keys are alone */
+/* Hero CTA — zooms in center of screen as keys scatter */
 .hero-cta {
   position: absolute;
-  bottom: 12vh;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%) translateY(40px);
+  transform: translate(-50%, -50%) scale(0.5);
   text-align: center;
   opacity: 0;
   will-change: opacity, transform;
@@ -103,20 +103,22 @@ body {
 }
 
 .hero-cta p {
-  font-size: clamp(16px, 2vw, 22px);
-  font-weight: 600;
+  font-size: clamp(32px, 5vw, 64px);
+  font-weight: 800;
   color: var(--text-primary);
-  margin-bottom: 12px;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 20px;
 }
 
 .hero-cta a {
   display: inline-block;
-  font-size: clamp(14px, 1.6vw, 18px);
+  font-size: clamp(16px, 2vw, 24px);
   font-weight: 700;
   color: var(--garnet);
   text-decoration: none;
-  border-bottom: 2px solid var(--garnet);
-  padding-bottom: 2px;
+  border-bottom: 2.5px solid var(--garnet);
+  padding-bottom: 4px;
   transition: opacity 0.2s;
 }
 

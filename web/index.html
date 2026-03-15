@@ -311,18 +311,17 @@
       }
     }
 
-    /* ── Hero CTA: appears from below when garnet keys are alone ── */
-    // Show between ~25% (wire keys gone) and ~60% (before garnet scatters away)
-    var ctaStart = 0.20;
-    var ctaFull = 0.35;
-    var ctaFadeStart = 0.58;
-    var ctaEnd = 0.68;
+    /* ── Hero CTA: zooms in at center as keys scatter away ── */
+    var ctaStart = 0.25;
+    var ctaFull = 0.45;
+    var ctaFadeStart = 0.65;
+    var ctaEnd = 0.78;
     var ctaIn = Math.min(Math.max((rawProgress - ctaStart) / (ctaFull - ctaStart), 0), 1);
     var ctaOut = Math.min(Math.max((rawProgress - ctaFadeStart) / (ctaEnd - ctaFadeStart), 0), 1);
     var ctaOpacity = easeOutCubic(ctaIn) * (1 - easeInQuad(ctaOut));
-    var ctaY = 40 * (1 - easeOutCubic(ctaIn));
+    var ctaScale = 0.5 + 0.5 * easeOutCubic(ctaIn);
     heroCta.style.opacity = ctaOpacity;
-    heroCta.style.transform = 'translateX(-50%) translateY(' + ctaY + 'px)';
+    heroCta.style.transform = 'translate(-50%, -50%) scale(' + ctaScale + ')';
     heroCta.classList.toggle('visible', ctaOpacity > 0.1);
 
     /* ── Content reveal from below (version 9 approach) ──
