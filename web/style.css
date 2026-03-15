@@ -111,6 +111,10 @@ body {
   margin-bottom: 20px;
 }
 
+.hero-cta .garnet-text {
+  color: var(--garnet);
+}
+
 .hero-cta a {
   display: inline-block;
   font-size: clamp(16px, 2vw, 24px);
@@ -128,6 +132,7 @@ body {
 
 .hero-cta.visible {
   pointer-events: auto;
+  z-index: 20;
 }
 
 /* Scroll hint */
