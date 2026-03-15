@@ -73,13 +73,14 @@ public partial class App : Application, INotifyPropertyChanged
 
         if (!createdNew)
         {
-            MessageBox.Show("GlueyKeys is already running.", "Already Running",
-                MessageBoxButton.OK, MessageBoxImage.Information);
             Shutdown();
             return;
         }
 
         base.OnStartup(e);
+
+        // Clean up startup entries from old app name to prevent double-launch
+        StartupService.CleanupLegacyEntries();
 
         // Load settings
         SettingsService.Load();
