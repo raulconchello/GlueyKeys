@@ -121,6 +121,13 @@ gh release create "$TAG" \
     --title "GlueyKeys $TAG" \
     --notes "$DESCRIPTION"
 
+echo "==> Updating download URLs in website..."
+OLD_TAG="v$CURRENT_VERSION"
+sed -i "s|/releases/download/$OLD_TAG/GlueyKeys.exe|/releases/download/$TAG/GlueyKeys.exe|g" web/index.html
+git add web/index.html
+git commit -m "Update download links to $TAG"
+git push
+
 echo ""
 echo "Done! Released $TAG"
 echo "https://github.com/raulconchello/GlueyKeys/releases/tag/$TAG"
