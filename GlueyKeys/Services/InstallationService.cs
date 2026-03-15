@@ -9,7 +9,7 @@ namespace GlueyKeys.Services;
 public class InstallationService
 {
     private const string AppName = "GlueyKeys";
-    private const string AppVersion = "1.0.0";
+    private const string AppVersion = "0.0.1";
     private const string Publisher = "GlueyKeys";
     private const string UninstallRegistryKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\" + AppName;
 
