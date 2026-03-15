@@ -68,6 +68,12 @@
       </div>
     </div>
 
+    <!-- CTA that rises from below as garnet keys are alone -->
+    <div class="hero-cta" id="heroCta">
+      <p>Try now GlueyKeys on Windows</p>
+      <a href="https://github.com/raulconchello/GlueyKeys/releases" target="_blank" rel="noopener">Download here</a>
+    </div>
+
     <!-- Scroll hint -->
     <div class="scroll-hint" id="scrollHint">
       <span>SCROLL</span>
@@ -173,6 +179,7 @@
   var scrollHint = document.getElementById('scrollHint');
   var keys = document.querySelectorAll('.key');
   var contentReveals = document.querySelectorAll('.content-reveal');
+  var heroCta = document.getElementById('heroCta');
 
   /* ── Measurements ── */
   var vh, scrollRange;
@@ -303,6 +310,20 @@
         k.el.style.opacity = opacity;
       }
     }
+
+    /* ── Hero CTA: appears from below when garnet keys are alone ── */
+    // Show between ~25% (wire keys gone) and ~60% (before garnet scatters away)
+    var ctaStart = 0.20;
+    var ctaFull = 0.35;
+    var ctaFadeStart = 0.58;
+    var ctaEnd = 0.68;
+    var ctaIn = Math.min(Math.max((rawProgress - ctaStart) / (ctaFull - ctaStart), 0), 1);
+    var ctaOut = Math.min(Math.max((rawProgress - ctaFadeStart) / (ctaEnd - ctaFadeStart), 0), 1);
+    var ctaOpacity = easeOutCubic(ctaIn) * (1 - easeInQuad(ctaOut));
+    var ctaY = 40 * (1 - easeOutCubic(ctaIn));
+    heroCta.style.opacity = ctaOpacity;
+    heroCta.style.transform = 'translateX(-50%) translateY(' + ctaY + 'px)';
+    heroCta.classList.toggle('visible', ctaOpacity > 0.1);
 
     /* ── Content reveal from below (version 9 approach) ──
          As keys scatter and clear, content fades in rising UPWARD.
