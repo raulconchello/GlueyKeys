@@ -412,7 +412,7 @@
     var ctaOpacity = easeOutCubic(ctaIn);
     var ctaScale = 0.3 + 0.7 * easeOutCubic(ctaIn);
     heroCta.style.opacity = ctaOpacity;
-    heroCta.style.transform = 'translate(-50%, -50%) scale(' + ctaScale + ')';
+    heroCta.style.transform = 'scale(' + ctaScale + ')';
     heroCta.classList.toggle('visible', ctaOpacity > 0.01);
 
     /* ── Content reveal from below (version 9 approach) ──
