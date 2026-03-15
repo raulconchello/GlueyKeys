@@ -7,7 +7,7 @@ public class StartupService
 {
     private const string RegistryKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
     private const string AppName = "GlueyKeys";
-    private const string OldAppName = "KeyboardActuallyWorks";
+
 
     public bool IsStartupEnabled()
     {
@@ -67,29 +67,5 @@ public class StartupService
             EnableStartup();
         else
             DisableStartup();
-    }
-
-    /// <summary>
-    /// Remove startup entries left behind by the old app name (KeyboardActuallyWorks).
-    /// </summary>
-    public void CleanupLegacyEntries()
-    {
-        try
-        {
-            // Remove old registry Run entry
-            using var key = Registry.CurrentUser.OpenSubKey(RegistryKey, true);
-            key?.DeleteValue(OldAppName, false);
-        }
-        catch { }
-
-        try
-        {
-            // Remove old startup folder shortcut
-            var startupFolder = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-            var oldShortcut = Path.Combine(startupFolder, $"{OldAppName}.lnk");
-            if (File.Exists(oldShortcut))
-                File.Delete(oldShortcut);
-        }
-        catch { }
     }
 }

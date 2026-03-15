@@ -79,9 +79,6 @@ public partial class App : Application, INotifyPropertyChanged
 
         base.OnStartup(e);
 
-        // Clean up startup entries from old app name to prevent double-launch
-        StartupService.CleanupLegacyEntries();
-
         // Load settings
         SettingsService.Load();
 
