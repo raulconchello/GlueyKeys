@@ -283,6 +283,61 @@ body {
 }
 
 /* =====================================================
+   VALUE PROP
+   ===================================================== */
+
+.value-prop {
+  padding: 120px clamp(20px, 5vw, 80px);
+  max-width: 860px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.value-title {
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--text-primary);
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+
+.value-subtitle {
+  font-size: clamp(16px, 1.8vw, 20px);
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 620px;
+  margin: 0 auto 48px;
+}
+
+.value-features {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.value-feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.value-feature svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  stroke: var(--garnet);
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* =====================================================
    THE PROBLEM
    ===================================================== */
 
