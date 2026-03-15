@@ -1,5 +1,5 @@
 /* ============================================================
-   GlueyKeys — Landing Page Styles
+   GlueyKeys - Landing Page Styles
    ============================================================ */
 
 *, *::before, *::after {
@@ -52,7 +52,7 @@ body {
   background: var(--bg);
 }
 
-/* Hero title — sits ABOVE the keyboard (version 5 layout) */
+/* Hero title - sits ABOVE the keyboard (version 5 layout) */
 .hero-title {
   position: absolute;
   top: 8vh;
@@ -89,7 +89,7 @@ body {
   margin-right: auto;
 }
 
-/* Hero CTA — zooms in from nothing at center as garnet keys scatter away */
+/* Hero CTA - zooms in from nothing at center as garnet keys scatter away */
 .hero-cta {
   position: absolute;
   top: 50%;
@@ -266,7 +266,7 @@ body {
 }
 
 /* =====================================================
-   CONTENT — revealed from below (version 9 approach)
+   CONTENT - revealed from below (version 9 approach)
    ===================================================== */
 
 .content {
@@ -288,9 +288,8 @@ body {
 
 .value-prop {
   padding: 120px clamp(20px, 5vw, 80px);
-  max-width: 860px;
+  max-width: 1080px;
   margin: 0 auto;
-  text-align: center;
 }
 
 .value-title {
@@ -307,14 +306,13 @@ body {
   color: var(--text-secondary);
   line-height: 1.7;
   max-width: 620px;
-  margin: 0 auto 48px;
+  margin-bottom: 48px;
 }
 
 .value-features {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  align-items: center;
 }
 
 .value-feature {
