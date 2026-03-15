@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background: Rounded square with elegant garnet color -->
+  <rect x="0" y="0" width="512" height="512" rx="80" ry="80" fill="#8B1538"/>
+
+  <!-- Subtle gradient overlay for premium feel -->
+  <defs>
+    <linearGradient id="sheen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#A91D47;stop-opacity:0.4"/>
+      <stop offset="50%" style="stop-color:#8B1538;stop-opacity:0"/>
+      <stop offset="100%" style="stop-color:#5A0D24;stop-opacity:0.3"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="512" height="512" rx="80" ry="80" fill="url(#sheen)"/>
+
+  <!-- Full keyboard symbol - centered, stylized, minimal -->
+  <g transform="translate(86, 140)">
+    <!-- Keyboard frame - THICKER border -->
+    <rect x="0" y="0" width="340" height="232" rx="24" ry="24"
+          fill="none" stroke="white" stroke-width="22"/>
+
+    <!-- Row 1 - Top row (5 keys) -->
+    <rect x="28" y="28" width="44" height="36" rx="6" fill="white"/>
+    <rect x="84" y="28" width="44" height="36" rx="6" fill="white"/>
+    <rect x="140" y="28" width="44" height="36" rx="6" fill="white"/>
+    <rect x="196" y="28" width="44" height="36" rx="6" fill="white"/>
+    <rect x="252" y="28" width="60" height="36" rx="6" fill="white"/>
+
+    <!-- Row 2 - Second row (5 keys, staggered) -->
+    <rect x="36" y="76" width="44" height="36" rx="6" fill="white"/>
+    <rect x="92" y="76" width="44" height="36" rx="6" fill="white"/>
+    <rect x="148" y="76" width="44" height="36" rx="6" fill="white"/>
+    <rect x="204" y="76" width="44" height="36" rx="6" fill="white"/>
+    <rect x="260" y="76" width="52" height="36" rx="6" fill="white"/>
+
+    <!-- Row 3 - Third row (4 keys) -->
+    <rect x="44" y="124" width="52" height="36" rx="6" fill="white"/>
+    <rect x="108" y="124" width="44" height="36" rx="6" fill="white"/>
+    <rect x="164" y="124" width="44" height="36" rx="6" fill="white"/>
+    <rect x="220" y="124" width="92" height="36" rx="6" fill="white"/>
+
+    <!-- Space bar (bottom row) -->
+    <rect x="60" y="172" width="220" height="32" rx="8" fill="white"/>
+  </g>
+</svg>

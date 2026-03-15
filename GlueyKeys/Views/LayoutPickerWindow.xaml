@@ -1,0 +1,54 @@
+<Window x:Class="GlueyKeys.Views.LayoutPickerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="New Keyboard Detected"
+        Height="400" Width="400"
+        WindowStyle="SingleBorderWindow"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Icon="/Assets/icon.ico"
+        Topmost="True">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Keyboard Name -->
+        <TextBlock Grid.Row="0"
+                   x:Name="KeyboardNameText"
+                   Text="Unknown Keyboard"
+                   FontWeight="SemiBold"
+                   FontSize="14"
+                   TextWrapping="Wrap"
+                   Margin="0,0,0,5"/>
+
+        <!-- Prompt -->
+        <TextBlock Grid.Row="1"
+                   Text="Which keyboard layout should be used?"
+                   Foreground="Gray"
+                   Margin="0,0,0,15"/>
+
+        <!-- Layout List -->
+        <ListBox Grid.Row="2"
+                 x:Name="LayoutListBox"
+                 SelectionMode="Single"
+                 SelectionChanged="LayoutListBox_SelectionChanged"
+                 MouseDoubleClick="LayoutListBox_MouseDoubleClick"
+                 KeyDown="LayoutListBox_KeyDown">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding DisplayName}" Padding="5,3"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button Content="Cancel" Width="80" Padding="10,5" Click="CancelButton_Click" Margin="0,0,10,0" IsCancel="True"/>
+            <Button x:Name="SaveButton" Content="Save" Width="80" Padding="10,5" Click="SaveButton_Click" IsEnabled="False"/>
+        </StackPanel>
+    </Grid>
+</Window>

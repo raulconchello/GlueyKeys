@@ -1,0 +1,29 @@
+<Application x:Class="GlueyKeys.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:tb="http://www.hardcodet.net/taskbar"
+             xmlns:converters="clr-namespace:GlueyKeys.Converters"
+             ShutdownMode="OnExplicitShutdown">
+    <Application.Resources>
+        <ResourceDictionary>
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+            <!-- Tray Icon -->
+            <tb:TaskbarIcon x:Key="TrayIcon"
+                            IconSource="/Assets/icon.ico"
+                            ToolTipText="GlueyKeys"
+                            LeftClickCommand="{Binding ShowSettingsCommand}"
+                            DoubleClickCommand="{Binding ShowSettingsCommand}">
+                <tb:TaskbarIcon.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Settings" Command="{Binding ShowSettingsCommand}" />
+                        <MenuItem Header="Enabled" IsCheckable="True" IsChecked="{Binding IsEnabled, Mode=TwoWay}" />
+                        <Separator />
+                        <MenuItem Header="Uninstall" Command="{Binding UninstallCommand}" />
+                        <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
+                    </ContextMenu>
+                </tb:TaskbarIcon.ContextMenu>
+            </tb:TaskbarIcon>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
