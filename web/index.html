@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlueyKeys — Per-keyboard layout switching for Windows</title>
+    <meta name="description" content="Assign a language layout to each physical keyboard. GlueyKeys auto-switches when you type.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="keyboard-wrapper">
+            <svg viewBox="-10 -10 740 312" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+                <defs>
+                    <linearGradient id="accent-grad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#818cf8"/>
+                        <stop offset="100%" stop-color="#6366f1"/>
+                    </linearGradient>
+                    <filter id="key-shadow">
+                        <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.08"/>
+                    </filter>
+                    <filter id="accent-glow">
+                        <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#6366f1" flood-opacity="0.35"/>
+                    </filter>
+                </defs>
+
+                <!-- Keyboard body -->
+                <rect x="0" y="0" width="720" height="292" rx="16" fill="#111827"/>
+
+                <!-- Row 1: Q W E R T Y U I O P -->
+                <g filter="url(#key-shadow)">
+                    <rect x="24" y="24" width="60" height="56" rx="8" fill="#fff"/><text x="54" y="52" text-anchor="middle" dominant-baseline="central" fill="#374151" font-size="15" font-weight="500" font-family="Inter,sans-serif">Q</text>
+                    <rect x="92" y="24" width="60" height="56" rx="8" fill="#fff"/><text x="122" y="52" text-anchor="middle" dominant-baseline="central" fill="#374151" font-size="15" font-weight="500" font-family="Inter,sans-serif">W</text>
+                    <rect x="160" y="24" width="60" height="56" rx="8" fill="#fff"/><text x="190" y="52" text-anchor="middle" dominant-baseline="central" fill="#374151" font-size="15" font-weight="500" font-family="Inter,sans-serif">E</text>
+                    <rect x="228" y="24" width="60" height="56" rx="8" fill="#fff"/><text x="258" y="52" text-anchor="middle" dominant-baseline="central" fill="#374151" font-size="15" font-weight="500" font-family="Inter,sans-serif">R</text>
+                    <rect x="296" y="24" width="60" height="56" rx="8" fill="#fff"/><text x="326" y="52" text-anchor="middle" dominant-baseline="central" fill="#374151" font-size="15" font-weight="500" font-family="Inter,sans-serif">T</text>
+                    <rect x="364" y="24" width="60" height="56" rx="8" fill="#fff"/><text x="394" y="52" text-anchor="middle" dominant-baseline="central" fill="#374151" font-size="15" font-weight="500" font-family="Inter,sans-serif">Y</text>
+                    <rect x="432" y="24" width="60" height="56" rx="8" fill="#fff"/><text x="462" y="52" text-anchor="middle" dominant-baseline="central" fill="#374151" font-size="15" font-weight="500" font-family="Inter,sans-serif">U</text>
+                    <rect x="500" y="24" width="60" height="56" rx="8" fill="#fff"/><text x="530" y="52" text-anchor="middle" dominant-baseline="central" fill="#374151" font-size="15" font-weight="500" font-family="Inter,sans-serif">I</text>
+                    <rect x="568" y="24" width="60" height="56" rx="8" fill="#fff"/><text x="598" y="52" text-anchor="middle" dominant-baseline="central" fill="#374151" font-size="15" font-weight="500" font-family="Inter,sans-serif">O</text>
+                    <rect x="636" y="24" width="60" height="56" rx="8" fill="#fff"/><text x="666" y="52" text-anchor="middle" dominant-baseline="central" fill="#374151" font-size="15" font-weight="500" font-family="Inter,sans-serif">P</text>
+                </g>
+
+                <!-- Row 2: G L U E Y K E Y S (highlighted) -->
+                <g filter="url(#accent-glow)">
+                    <rect x="48" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="78" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">G</text>
+                    <rect x="116" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="146" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">L</text>
+                    <rect x="184" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="214" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">U</text>
+                    <rect x="252" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="282" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">E</text>
+                    <rect x="320" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="350" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">Y</text>
+                    <rect x="388" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="418" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">K</text>
+                    <rect x="456" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="486" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">E</text>
+                    <rect x="524" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="554" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">Y</text>
+                    <rect x="592" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="622" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">S</text>
+                </g>
+
+                <!-- Row 3: Z X C V B N M -->
+                <g filter="url(#key-shadow)">
+                    <rect x="72" y="152" width="60" height="56" rx="8" fill="#fff"/><text x="102" y="180" text-anchor="middle" dominant-baseline="central" fill="#374151" font-size="15" font-weight="500" font-family="Inter,sans-serif">Z</text>
+                    <rect x="140" y="152" width="60" height="56" rx="8" fill="#fff"/><text x="170" y="180" text-anchor="middle" dominant-baseline="central" fill="#374151" font-size="15" font-weight="500" font-family="Inter,sans-serif">X</text>
+                    <rect x="208" y="152" width="60" height="56" rx="8" fill="#fff"/><text x="238" y="180" text-anchor="middle" dominant-baseline="central" fill="#374151" font-size="15" font-weight="500" font-family="Inter,sans-serif">C</text>
+                    <rect x="276" y="152" width="60" height="56" rx="8" fill="#fff"/><text x="306" y="180" text-anchor="middle" dominant-baseline="central" fill="#374151" font-size="15" font-weight="500" font-family="Inter,sans-serif">V</text>
+                    <rect x="344" y="152" width="60" height="56" rx="8" fill="#fff"/><text x="374" y="180" text-anchor="middle" dominant-baseline="central" fill="#374151" font-size="15" font-weight="500" font-family="Inter,sans-serif">B</text>
+                    <rect x="412" y="152" width="60" height="56" rx="8" fill="#fff"/><text x="442" y="180" text-anchor="middle" dominant-baseline="central" fill="#374151" font-size="15" font-weight="500" font-family="Inter,sans-serif">N</text>
+                    <rect x="480" y="152" width="60" height="56" rx="8" fill="#fff"/><text x="510" y="180" text-anchor="middle" dominant-baseline="central" fill="#374151" font-size="15" font-weight="500" font-family="Inter,sans-serif">M</text>
+                </g>
+
+                <!-- Space bar (download button) -->
+                <a href="https://github.com/raulconchello/GlueyKeys/releases" target="_blank">
+                    <g class="space-key" filter="url(#accent-glow)">
+                        <rect x="180" y="216" width="360" height="52" rx="10" fill="url(#accent-grad)"/>
+                        <text x="360" y="242" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="15" font-weight="600" font-family="Inter,sans-serif">Download for Windows</text>
+                    </g>
+                </a>
+            </svg>
+        </div>
+        <p class="tagline">Each keyboard, its own language.</p>
+        <p class="subtitle">Auto-switches your Windows input language when you type on a different keyboard.</p>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <h2>Simple by design</h2>
+        <div class="features-grid">
+            <div class="card">
+                <h3>Per-keyboard layouts</h3>
+                <p>Assign a specific language to each physical keyboard. Your laptop gets English, your external keyboard gets Spanish.</p>
+            </div>
+            <div class="card">
+                <h3>Instant switching</h3>
+                <p>The moment you press a key, GlueyKeys detects which keyboard it came from and switches to the right layout.</p>
+            </div>
+            <div class="card">
+                <h3>Runs quietly</h3>
+                <p>Lives in your system tray. No windows, no interruptions. Just works in the background.</p>
+            </div>
+            <div class="card">
+                <h3>Easy setup</h3>
+                <p>A wizard guides you through first-time configuration. Press a key on any keyboard and pick its layout.</p>
+            </div>
+            <div class="card">
+                <h3>Any keyboard</h3>
+                <p>Works with USB, Bluetooth, and built-in laptop keyboards. If Windows sees it, GlueyKeys can map it.</p>
+            </div>
+            <div class="card">
+                <h3>Lightweight</h3>
+                <p>Native Windows app built with WPF. Minimal memory footprint, no background services.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Open Source -->
+    <section class="open-source">
+        <h2>Built in the open</h2>
+        <p class="open-source-text">GlueyKeys is free and open source. Found a bug? Want a feature? Contributions are welcome.</p>
+        <a href="https://github.com/raulconchello/GlueyKeys" class="github-btn" target="_blank" rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            View on GitHub
+        </a>
+        <div class="github-links">
+            <a href="https://github.com/raulconchello/GlueyKeys/issues/new" target="_blank" rel="noopener">Report a bug</a>
+            <span class="separator"></span>
+            <a href="https://github.com/raulconchello/GlueyKeys/issues/new" target="_blank" rel="noopener">Request a feature</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>GlueyKeys &mdash; MIT License</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,244 @@
+:root {
+    --accent: #6366f1;
+    --accent-dark: #4f46e5;
+    --text: #111827;
+    --text-secondary: #6b7280;
+    --bg: #ffffff;
+    --card-border: #f3f4f6;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Hero ── */
+
+.hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+}
+
+.keyboard-wrapper {
+    width: 100%;
+    max-width: 660px;
+}
+
+.keyboard-wrapper svg {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.2));
+}
+
+.space-key {
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.space-key:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+}
+
+.tagline {
+    margin-top: 56px;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+    letter-spacing: -0.02em;
+}
+
+.subtitle {
+    margin-top: 12px;
+    font-size: 17px;
+    color: var(--text-secondary);
+    text-align: center;
+    max-width: 480px;
+    line-height: 1.6;
+}
+
+/* ── Features ── */
+
+.features {
+    padding: 120px 24px;
+    max-width: 1060px;
+    margin: 0 auto;
+}
+
+.features h2 {
+    font-size: 36px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 64px;
+    letter-spacing: -0.02em;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.card {
+    padding: 32px;
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.card:hover {
+    border-color: #e5e7eb;
+}
+
+.card h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+}
+
+.card p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+}
+
+/* ── Open Source ── */
+
+.open-source {
+    padding: 120px 24px;
+    text-align: center;
+    background: #fafafa;
+}
+
+.open-source h2 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+}
+
+.open-source-text {
+    font-size: 17px;
+    color: var(--text-secondary);
+    max-width: 520px;
+    margin: 0 auto 40px;
+    line-height: 1.65;
+}
+
+.github-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    background: var(--text);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    transition: background 0.2s ease;
+}
+
+.github-btn:hover {
+    background: #374151;
+}
+
+.github-links {
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+}
+
+.github-links a {
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.github-links a:hover {
+    color: var(--text);
+}
+
+.github-links .separator {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #d1d5db;
+}
+
+/* ── Footer ── */
+
+footer {
+    padding: 40px 24px;
+    text-align: center;
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 1024px) {
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .hero {
+        padding: 48px 20px;
+    }
+
+    .tagline {
+        font-size: 22px;
+        margin-top: 40px;
+    }
+
+    .subtitle {
+        font-size: 15px;
+    }
+
+    .features {
+        padding: 80px 20px;
+    }
+
+    .features h2,
+    .open-source h2 {
+        font-size: 28px;
+        margin-bottom: 40px;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        padding: 24px;
+    }
+
+    .open-source {
+        padding: 80px 20px;
+    }
+}
