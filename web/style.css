@@ -215,6 +215,11 @@ body {
   font-weight: 800;
 }
 
+.key--ghost {
+  border: 2px solid #fff;
+  color: #fff;
+}
+
 .key--win svg {
   width: clamp(16px, 3vw, 28px);
   height: clamp(16px, 3vw, 28px);
