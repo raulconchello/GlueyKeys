@@ -89,16 +89,16 @@ body {
   margin-right: auto;
 }
 
-/* Hero CTA — zooms in center of screen as keys scatter */
+/* Hero CTA — zooms in from nothing at center as garnet keys scatter away */
 .hero-cta {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) scale(0.5);
+  transform: translate(-50%, -50%) scale(0.3);
   text-align: center;
   opacity: 0;
   will-change: opacity, transform;
-  z-index: 5;
+  z-index: 1;
   pointer-events: none;
 }
 

@@ -311,18 +311,24 @@
       }
     }
 
-    /* ── Hero CTA: zooms in at center as keys scatter away ── */
-    var ctaStart = 0.25;
-    var ctaFull = 0.45;
-    var ctaFadeStart = 0.65;
-    var ctaEnd = 0.78;
+    /* ── Hero CTA: zooms in from nothing AS garnet keys scatter away ──
+         Garnet keys start scattering at ~0.55-0.65 delay with easeInCubic,
+         so they become visibly moving around 0.60-0.65.
+         CTA appears from scale(0.3) at that point and reaches full size
+         when garnet keys are fully gone (~0.85).
+         Then holds briefly and fades out as content below appears. */
+    var ctaStart = 0.58;       // begins as garnet keys start visibly leaving
+    var ctaFull = 0.84;        // full size/opacity when garnet keys are gone
+    var ctaHoldEnd = 0.89;     // holds at full visibility briefly
+    var ctaFadeEnd = 0.96;     // fully faded out
+
     var ctaIn = Math.min(Math.max((rawProgress - ctaStart) / (ctaFull - ctaStart), 0), 1);
-    var ctaOut = Math.min(Math.max((rawProgress - ctaFadeStart) / (ctaEnd - ctaFadeStart), 0), 1);
+    var ctaOut = Math.min(Math.max((rawProgress - ctaHoldEnd) / (ctaFadeEnd - ctaHoldEnd), 0), 1);
     var ctaOpacity = easeOutCubic(ctaIn) * (1 - easeInQuad(ctaOut));
-    var ctaScale = 0.5 + 0.5 * easeOutCubic(ctaIn);
+    var ctaScale = 0.3 + 0.7 * easeOutCubic(ctaIn);
     heroCta.style.opacity = ctaOpacity;
     heroCta.style.transform = 'translate(-50%, -50%) scale(' + ctaScale + ')';
-    heroCta.classList.toggle('visible', ctaOpacity > 0.1);
+    heroCta.classList.toggle('visible', ctaOpacity > 0.01);
 
     /* ── Content reveal from below (version 9 approach) ──
          As keys scatter and clear, content fades in rising UPWARD.
