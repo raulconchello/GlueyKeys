@@ -215,6 +215,12 @@ body {
   font-weight: 800;
 }
 
+.key--win svg {
+  width: clamp(16px, 3vw, 28px);
+  height: clamp(16px, 3vw, 28px);
+  fill: var(--wire-text);
+}
+
 .key--space {
   flex: none;
   width: min(500px, 60%);
