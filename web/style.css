@@ -115,6 +115,26 @@ body {
   color: var(--garnet);
 }
 
+.hero-cta .section-label {
+  margin-bottom: 16px;
+}
+
+.hero-cta .value-title {
+  font-size: clamp(28px, 4.5vw, 52px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--text-primary);
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+
+.value-subtitle-hero {
+  font-size: clamp(14px, 1.6vw, 18px);
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 560px;
+}
+
 .hero-cta a {
   display: inline-block;
   font-size: clamp(16px, 2vw, 24px);
@@ -522,6 +542,51 @@ body {
   font-size: 14px;
   line-height: 1.7;
   color: var(--text-secondary);
+}
+
+/* =====================================================
+   DOWNLOAD CTA
+   ===================================================== */
+
+.download-cta {
+  padding: 100px clamp(20px, 5vw, 80px);
+  max-width: 1080px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.download-cta p {
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+  margin-bottom: 28px;
+}
+
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 36px;
+  background: linear-gradient(135deg, var(--garnet), var(--garnet-dark));
+  color: #fff;
+  text-decoration: none;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: 700;
+  transition: box-shadow 0.2s, transform 0.2s;
+  box-shadow: 0 4px 16px rgba(169, 29, 71, 0.25);
+}
+
+.download-btn:hover {
+  box-shadow: 0 6px 24px rgba(169, 29, 71, 0.35);
+  transform: translateY(-2px);
+}
+
+.download-btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
 /* =====================================================
