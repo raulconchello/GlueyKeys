@@ -1,129 +1,337 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GlueyKeys — Per-keyboard layout switching for Windows</title>
-    <meta name="description" content="Assign a language layout to each physical keyboard. GlueyKeys auto-switches when you type.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlueyKeys — Auto-switch keyboard layout per physical keyboard</title>
+<meta name="description" content="GlueyKeys automatically switches your Windows keyboard layout based on which physical keyboard you're typing on. Free, open source, lightweight.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="keyboard-wrapper">
-            <svg viewBox="-20 -20 760 320" xmlns="http://www.w3.org/2000/svg" overflow="visible">
-                <defs>
-                    <linearGradient id="accent-grad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#A91D47"/>
-                        <stop offset="100%" stop-color="#8B1538"/>
-                    </linearGradient>
-                    <filter id="accent-glow" x="-20%" y="-20%" width="140%" height="140%">
-                        <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#8B1538" flood-opacity="0.35"/>
-                    </filter>
-                </defs>
+<!-- ======================== HERO ======================== -->
+<section class="hero" id="hero">
+  <div class="hero-sticky">
 
-                <!-- Row 1: Q W E R T Y U I O P (wireframe) -->
-                <g>
-                    <rect x="24" y="24" width="60" height="56" rx="8" fill="none" stroke="#d1d5db" stroke-width="1.2"/><text x="54" y="52" text-anchor="middle" dominant-baseline="central" fill="#c0c5cc" font-size="14" font-weight="400" font-family="Inter,sans-serif">Q</text>
-                    <rect x="92" y="24" width="60" height="56" rx="8" fill="none" stroke="#d1d5db" stroke-width="1.2"/><text x="122" y="52" text-anchor="middle" dominant-baseline="central" fill="#c0c5cc" font-size="14" font-weight="400" font-family="Inter,sans-serif">W</text>
-                    <rect x="160" y="24" width="60" height="56" rx="8" fill="none" stroke="#d1d5db" stroke-width="1.2"/><text x="190" y="52" text-anchor="middle" dominant-baseline="central" fill="#c0c5cc" font-size="14" font-weight="400" font-family="Inter,sans-serif">E</text>
-                    <rect x="228" y="24" width="60" height="56" rx="8" fill="none" stroke="#d1d5db" stroke-width="1.2"/><text x="258" y="52" text-anchor="middle" dominant-baseline="central" fill="#c0c5cc" font-size="14" font-weight="400" font-family="Inter,sans-serif">R</text>
-                    <rect x="296" y="24" width="60" height="56" rx="8" fill="none" stroke="#d1d5db" stroke-width="1.2"/><text x="326" y="52" text-anchor="middle" dominant-baseline="central" fill="#c0c5cc" font-size="14" font-weight="400" font-family="Inter,sans-serif">T</text>
-                    <rect x="364" y="24" width="60" height="56" rx="8" fill="none" stroke="#d1d5db" stroke-width="1.2"/><text x="394" y="52" text-anchor="middle" dominant-baseline="central" fill="#c0c5cc" font-size="14" font-weight="400" font-family="Inter,sans-serif">Y</text>
-                    <rect x="432" y="24" width="60" height="56" rx="8" fill="none" stroke="#d1d5db" stroke-width="1.2"/><text x="462" y="52" text-anchor="middle" dominant-baseline="central" fill="#c0c5cc" font-size="14" font-weight="400" font-family="Inter,sans-serif">U</text>
-                    <rect x="500" y="24" width="60" height="56" rx="8" fill="none" stroke="#d1d5db" stroke-width="1.2"/><text x="530" y="52" text-anchor="middle" dominant-baseline="central" fill="#c0c5cc" font-size="14" font-weight="400" font-family="Inter,sans-serif">I</text>
-                    <rect x="568" y="24" width="60" height="56" rx="8" fill="none" stroke="#d1d5db" stroke-width="1.2"/><text x="598" y="52" text-anchor="middle" dominant-baseline="central" fill="#c0c5cc" font-size="14" font-weight="400" font-family="Inter,sans-serif">O</text>
-                    <rect x="636" y="24" width="60" height="56" rx="8" fill="none" stroke="#d1d5db" stroke-width="1.2"/><text x="666" y="52" text-anchor="middle" dominant-baseline="central" fill="#c0c5cc" font-size="14" font-weight="400" font-family="Inter,sans-serif">P</text>
-                </g>
+    <!-- Title above keyboard (version 5 layout) -->
+    <div class="hero-title" id="heroTitle">
+      <h1>Your keyboards.<br><span>Your layouts.</span></h1>
+      <p>GlueyKeys remembers which layout belongs to which keyboard and switches instantly.</p>
+    </div>
 
-                <!-- Row 2: G l u e y K e y s (highlighted garnet) -->
-                <g filter="url(#accent-glow)">
-                    <rect x="48" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="78" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">G</text>
-                    <rect x="116" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="146" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">l</text>
-                    <rect x="184" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="214" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">u</text>
-                    <rect x="252" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="282" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">e</text>
-                    <rect x="320" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="350" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">y</text>
-                    <rect x="388" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="418" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">K</text>
-                    <rect x="456" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="486" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">e</text>
-                    <rect x="524" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="554" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">y</text>
-                    <rect x="592" y="88" width="60" height="56" rx="8" fill="url(#accent-grad)"/><text x="622" y="116" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="18" font-weight="700" font-family="Inter,sans-serif">s</text>
-                </g>
-
-                <!-- Row 3: Z X C V B N M (wireframe) -->
-                <g>
-                    <rect x="72" y="152" width="60" height="56" rx="8" fill="none" stroke="#d1d5db" stroke-width="1.2"/><text x="102" y="180" text-anchor="middle" dominant-baseline="central" fill="#c0c5cc" font-size="14" font-weight="400" font-family="Inter,sans-serif">Z</text>
-                    <rect x="140" y="152" width="60" height="56" rx="8" fill="none" stroke="#d1d5db" stroke-width="1.2"/><text x="170" y="180" text-anchor="middle" dominant-baseline="central" fill="#c0c5cc" font-size="14" font-weight="400" font-family="Inter,sans-serif">X</text>
-                    <rect x="208" y="152" width="60" height="56" rx="8" fill="none" stroke="#d1d5db" stroke-width="1.2"/><text x="238" y="180" text-anchor="middle" dominant-baseline="central" fill="#c0c5cc" font-size="14" font-weight="400" font-family="Inter,sans-serif">C</text>
-                    <rect x="276" y="152" width="60" height="56" rx="8" fill="none" stroke="#d1d5db" stroke-width="1.2"/><text x="306" y="180" text-anchor="middle" dominant-baseline="central" fill="#c0c5cc" font-size="14" font-weight="400" font-family="Inter,sans-serif">V</text>
-                    <rect x="344" y="152" width="60" height="56" rx="8" fill="none" stroke="#d1d5db" stroke-width="1.2"/><text x="374" y="180" text-anchor="middle" dominant-baseline="central" fill="#c0c5cc" font-size="14" font-weight="400" font-family="Inter,sans-serif">B</text>
-                    <rect x="412" y="152" width="60" height="56" rx="8" fill="none" stroke="#d1d5db" stroke-width="1.2"/><text x="442" y="180" text-anchor="middle" dominant-baseline="central" fill="#c0c5cc" font-size="14" font-weight="400" font-family="Inter,sans-serif">N</text>
-                    <rect x="480" y="152" width="60" height="56" rx="8" fill="none" stroke="#d1d5db" stroke-width="1.2"/><text x="510" y="180" text-anchor="middle" dominant-baseline="central" fill="#c0c5cc" font-size="14" font-weight="400" font-family="Inter,sans-serif">M</text>
-                </g>
-
-                <!-- Space bar (download button) -->
-                <a href="https://github.com/raulconchello/GlueyKeys/releases" target="_blank">
-                    <g class="space-key" filter="url(#accent-glow)">
-                        <rect x="180" y="220" width="360" height="52" rx="10" fill="url(#accent-grad)"/>
-                        <text x="350" y="246" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="15" font-weight="600" font-family="Inter,sans-serif">Download for Windows</text>
-                        <path d="M386 239 l6 6 l6-6 M392 245 v-10" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                    </g>
-                </a>
-            </svg>
-        </div>
-        <p class="tagline">Each keyboard, its own language.</p>
-        <p class="subtitle">Auto-switches your Windows input language when you type on a different keyboard.</p>
-    </section>
-
-    <!-- Features -->
-    <section class="features">
-        <h2>Simple by design</h2>
-        <div class="features-grid">
-            <div class="card">
-                <h3>Per-keyboard layouts</h3>
-                <p>Assign a specific language to each physical keyboard. Your laptop gets English, your external keyboard gets Spanish.</p>
-            </div>
-            <div class="card">
-                <h3>Instant switching</h3>
-                <p>The moment you press a key, GlueyKeys detects which keyboard it came from and switches to the right layout.</p>
-            </div>
-            <div class="card">
-                <h3>Runs quietly</h3>
-                <p>Lives in your system tray. No windows, no interruptions. Just works in the background.</p>
-            </div>
-            <div class="card">
-                <h3>Easy setup</h3>
-                <p>A wizard guides you through first-time configuration. Press a key on any keyboard and pick its layout.</p>
-            </div>
-            <div class="card">
-                <h3>Any keyboard</h3>
-                <p>Works with USB, Bluetooth, and built-in laptop keyboards. If Windows sees it, GlueyKeys can map it.</p>
-            </div>
-            <div class="card">
-                <h3>Lightweight</h3>
-                <p>Native Windows app built with WPF. Minimal memory footprint, no background services.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Open Source -->
-    <section class="open-source">
-        <h2>Built in the open</h2>
-        <p class="open-source-text">GlueyKeys is free and open source. Found a bug? Want a feature? Contributions are welcome.</p>
-        <a href="https://github.com/raulconchello/GlueyKeys" class="github-btn" target="_blank" rel="noopener">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-            View on GitHub
+    <!-- Keyboard (HTML divs, version 1 structure) -->
+    <div class="keyboard" id="keyboard">
+      <!-- Row 1: QWERTYUIOP wireframe -->
+      <div class="keyboard-row" id="row1">
+        <div class="key key--wire" data-row="1">Q</div>
+        <div class="key key--wire" data-row="1">W</div>
+        <div class="key key--wire" data-row="1">E</div>
+        <div class="key key--wire" data-row="1">R</div>
+        <div class="key key--wire" data-row="1">T</div>
+        <div class="key key--wire" data-row="1">Y</div>
+        <div class="key key--wire" data-row="1">U</div>
+        <div class="key key--wire" data-row="1">I</div>
+        <div class="key key--wire" data-row="1">O</div>
+        <div class="key key--wire" data-row="1">P</div>
+      </div>
+      <!-- Row 2: GlueyKeys (garnet) -->
+      <div class="keyboard-row" id="row2">
+        <div class="key key--garnet" data-row="2">G</div>
+        <div class="key key--garnet lower" data-row="2">l</div>
+        <div class="key key--garnet lower" data-row="2">u</div>
+        <div class="key key--garnet lower" data-row="2">e</div>
+        <div class="key key--garnet lower" data-row="2">y</div>
+        <div class="key key--garnet" data-row="2">K</div>
+        <div class="key key--garnet lower" data-row="2">e</div>
+        <div class="key key--garnet lower" data-row="2">y</div>
+        <div class="key key--garnet lower" data-row="2">s</div>
+      </div>
+      <!-- Row 3: ZXCVBNM wireframe -->
+      <div class="keyboard-row" id="row3">
+        <div class="key key--wire" data-row="3">Z</div>
+        <div class="key key--wire" data-row="3">X</div>
+        <div class="key key--wire" data-row="3">C</div>
+        <div class="key key--wire" data-row="3">V</div>
+        <div class="key key--wire" data-row="3">B</div>
+        <div class="key key--wire" data-row="3">N</div>
+        <div class="key key--wire" data-row="3">M</div>
+      </div>
+      <!-- Space bar -->
+      <div class="keyboard-row" id="rowSpace">
+        <a href="https://github.com/raulconchello/GlueyKeys/releases" class="key key--space" data-row="space" target="_blank" rel="noopener">
+          Download for Windows
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
         </a>
-        <div class="github-links">
-            <a href="https://github.com/raulconchello/GlueyKeys/issues/new" target="_blank" rel="noopener">Report a bug</a>
-            <span class="separator"></span>
-            <a href="https://github.com/raulconchello/GlueyKeys/issues/new" target="_blank" rel="noopener">Request a feature</a>
+      </div>
+    </div>
+
+    <!-- Scroll hint -->
+    <div class="scroll-hint" id="scrollHint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======================== CONTENT ======================== -->
+<div class="content" id="content">
+
+  <!-- Features -->
+  <section class="features content-reveal">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Simple by design</h2>
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h1m3 0h1m3 0h1m3 0h1M6 14h12"/></svg>
         </div>
-    </section>
+        <h3>Per-keyboard layouts</h3>
+        <p>Assign a different input language to each physical keyboard. Your laptop stays English, your external stays Spanish, automatically.</p>
+      </div>
 
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <h3>Instant switching</h3>
+        <p>The moment you press a key, GlueyKeys detects which keyboard sent it and switches the layout in under a millisecond.</p>
+      </div>
 
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        </div>
+        <h3>Runs quietly</h3>
+        <p>Sits in the system tray and does its job. No pop-ups, no interruptions, no unnecessary notifications.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </div>
+        <h3>Easy setup</h3>
+        <p>Pick a keyboard, pick a layout, done. The straightforward interface takes seconds to configure, not minutes.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Any keyboard</h3>
+        <p>Works with any USB or Bluetooth keyboard Windows can see. No special drivers or hardware requirements.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M20.24 12.24a6 6 0 00-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>
+        </div>
+        <h3>Lightweight</h3>
+        <p>Tiny footprint, minimal memory, no bloat. It starts with Windows and stays out of your way.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Open Source -->
+  <section class="open-source content-reveal">
+    <div class="oss-box">
+      <div class="section-label">Open source</div>
+      <h2>Built in the open</h2>
+      <p>GlueyKeys is free and open source. Browse the code, report a bug, or suggest a feature. Contributions are welcome.</p>
+      <div class="oss-links">
+        <a href="https://github.com/raulconchello/GlueyKeys" class="oss-link oss-link-primary" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          View on GitHub
+        </a>
+        <a href="https://github.com/raulconchello/GlueyKeys/issues/new" class="oss-link oss-link-secondary" target="_blank" rel="noopener">
+          Report an issue
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p><a href="https://github.com/raulconchello/GlueyKeys">GlueyKeys</a> &mdash; auto-switch keyboard layouts on Windows</p>
+  </footer>
+
+</div>
+
+<!-- ======================== SCROLL ANIMATION ======================== -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── Cache DOM ── */
+  var hero = document.getElementById('hero');
+  var heroTitle = document.getElementById('heroTitle');
+  var scrollHint = document.getElementById('scrollHint');
+  var keys = document.querySelectorAll('.key');
+  var contentReveals = document.querySelectorAll('.content-reveal');
+
+  /* ── Measurements ── */
+  var vh, scrollRange;
+
+  function measure() {
+    vh = window.innerHeight;
+    scrollRange = hero.offsetHeight - vh;
+  }
+
+  measure();
+  window.addEventListener('resize', measure);
+
+  /* ── Pre-compute random scatter parameters for each key (version 1 approach) ── */
+  var keyData = [];
+  var seededRandom = (function () {
+    // Simple seeded pseudo-random for deterministic but "random-looking" scatter
+    var seed = 42;
+    return function () {
+      seed = (seed * 16807 + 0) % 2147483647;
+      return (seed - 1) / 2147483646;
+    };
+  })();
+
+  keys.forEach(function (el) {
+    var row = el.getAttribute('data-row');
+    var isGarnet = row === '2';
+    var isSpace = row === 'space';
+
+    // Scatter magnitude: garnet keys scatter MOST dramatically (last and biggest)
+    var magnitude = isGarnet ? 2.4 : isSpace ? 1.8 : 1;
+
+    // Delay: garnet keys start animating LATER in the scroll (scatter LAST)
+    // Wire keys scatter first, space bar mid, garnet last
+    var delay = isGarnet ? 0.30 + seededRandom() * 0.12
+              : isSpace  ? 0.18
+              : seededRandom() * 0.08;
+
+    // Random direction angle
+    var angle;
+    if (isSpace) {
+      // Space bar shoots straight down
+      angle = Math.PI / 2;
+    } else {
+      angle = seededRandom() * Math.PI * 2;
+    }
+
+    // Distance traveled
+    var dist = (1200 + seededRandom() * 1200) * magnitude;
+    var dx = Math.cos(angle) * dist;
+    var dy = Math.sin(angle) * dist;
+
+    // Random rotation
+    var rotation = (seededRandom() - 0.5) * 720 * magnitude;
+
+    // Scale at full scatter
+    var scaleEnd = isGarnet ? 0.5 + seededRandom() * 0.3 : 0.4 + seededRandom() * 0.3;
+
+    keyData.push({
+      el: el,
+      dx: dx,
+      dy: dy,
+      rotation: rotation,
+      scaleEnd: scaleEnd,
+      delay: delay,
+      isGarnet: isGarnet,
+      isSpace: isSpace
+    });
+  });
+
+  /* ── Easing functions ── */
+  function easeInCubic(t) {
+    return t * t * t;
+  }
+
+  function easeInQuad(t) {
+    return t * t;
+  }
+
+  function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  /* ── Scroll handler ── */
+  var ticking = false;
+
+  function onScroll() {
+    if (!ticking) {
+      requestAnimationFrame(update);
+      ticking = true;
+    }
+  }
+
+  function update() {
+    ticking = false;
+
+    var scrollY = window.scrollY || window.pageYOffset;
+    var rawProgress = Math.min(Math.max(scrollY / scrollRange, 0), 1);
+
+    /* ── Hero title: fade out quickly as scroll begins ── */
+    var titleFade = Math.max(0, 1 - rawProgress * 5);
+    heroTitle.style.opacity = titleFade;
+    heroTitle.style.transform = 'translateX(-50%) translateY(' + (-rawProgress * 60) + 'px)';
+
+    /* ── Scroll hint: fade out fast ── */
+    scrollHint.style.opacity = Math.max(0, 1 - rawProgress * 8) * 0.5;
+
+    /* ── Key scatter animation (version 1 explosion) ── */
+    for (var i = 0; i < keyData.length; i++) {
+      var k = keyData[i];
+
+      // Apply per-key delay: garnet keys don't start moving until progress > delay
+      var adjustedProgress = Math.min(Math.max((rawProgress - k.delay) / (1 - k.delay), 0), 1);
+
+      // Easing: garnet uses cubic (stays longer, then explodes), wire uses quadratic
+      var t = k.isGarnet ? easeInCubic(adjustedProgress) : easeInQuad(adjustedProgress);
+
+      if (t === 0) {
+        k.el.style.transform = 'translate3d(0,0,0) rotate(0deg) scale(1)';
+        k.el.style.opacity = '1';
+      } else {
+        var x = k.dx * t;
+        var y = k.dy * t;
+        var r = k.rotation * t;
+        var s = 1 + (k.scaleEnd - 1) * t;
+        var opacity = Math.max(1 - t * 1.3, 0);
+
+        k.el.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) rotate(' + r + 'deg) scale(' + s + ')';
+        k.el.style.opacity = opacity;
+      }
+    }
+
+    /* ── Content reveal from below (version 9 approach) ──
+         As keys scatter and clear, content fades in rising UPWARD.
+         We base this on the overall scatter progress so it feels
+         like the content was hiding behind the keyboard. */
+
+    // Content starts revealing once scatter is well underway (~40% scrolled)
+    // and is fully visible by ~85% scroll
+    var revealStart = 0.40;
+    var revealEnd = 0.85;
+    var revealProgress = Math.min(Math.max((rawProgress - revealStart) / (revealEnd - revealStart), 0), 1);
+    var revealEased = easeOutCubic(revealProgress);
+
+    for (var j = 0; j < contentReveals.length; j++) {
+      // Stagger each content section slightly
+      var sectionDelay = j * 0.08;
+      var sectionProgress = Math.min(Math.max((revealProgress - sectionDelay) / (1 - sectionDelay), 0), 1);
+      var sectionEased = easeOutCubic(sectionProgress);
+
+      contentReveals[j].style.opacity = sectionEased;
+      contentReveals[j].style.transform = 'translateY(' + (60 * (1 - sectionEased)) + 'px)';
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Initial state
+  update();
+})();
+</script>
 </body>
 </html>

@@ -1,244 +1,471 @@
-:root {
-    --accent: #6366f1;
-    --accent-dark: #4f46e5;
-    --text: #111827;
-    --text-secondary: #6b7280;
-    --bg: #ffffff;
-    --card-border: #f3f4f6;
+/* ============================================================
+   GlueyKeys — Landing Page Styles
+   ============================================================ */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+:root {
+  --garnet: #A91D47;
+  --garnet-dark: #8B1538;
+  --wire-border: #d1d5db;
+  --wire-text: #c0c5cc;
+  --text-primary: #1a1a1a;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  --bg: #fff;
 }
 
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-    color: var(--text);
-    background: var(--bg);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Hero ── */
+/* =====================================================
+   HERO
+   ===================================================== */
 
 .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 24px;
+  position: relative;
+  height: 250vh;
 }
 
-.keyboard-wrapper {
-    width: 100%;
-    max-width: 900px;
-    padding: 0 16px;
+.hero-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--bg);
 }
 
-.keyboard-wrapper svg {
-    width: 100%;
-    height: auto;
+/* Hero title — sits ABOVE the keyboard (version 5 layout) */
+.hero-title {
+  position: absolute;
+  top: 8vh;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 2;
+  will-change: opacity, transform;
+  pointer-events: none;
 }
 
-.space-key {
-    cursor: pointer;
-    transition: transform 0.15s ease, opacity 0.15s ease;
+.hero-title h1 {
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.04em;
+  line-height: 1.1;
 }
 
-.space-key:hover {
-    opacity: 0.88;
-    transform: translateY(-1px);
+.hero-title h1 span {
+  background: linear-gradient(135deg, var(--garnet), var(--garnet-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.tagline {
-    margin-top: 56px;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text);
-    text-align: center;
-    letter-spacing: -0.02em;
+.hero-title p {
+  margin-top: 12px;
+  font-size: clamp(14px, 1.6vw, 18px);
+  color: var(--text-secondary);
+  font-weight: 400;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.subtitle {
-    margin-top: 12px;
-    font-size: 17px;
-    color: var(--text-secondary);
-    text-align: center;
-    max-width: 480px;
-    line-height: 1.6;
+/* Scroll hint */
+.scroll-hint {
+  position: absolute;
+  bottom: 5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.5;
+  will-change: opacity;
+  z-index: 2;
 }
 
-/* ── Features ── */
+.scroll-hint span {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--wire-border), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+
+/* =====================================================
+   KEYBOARD
+   ===================================================== */
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(6px, 1.2vw, 14px);
+  width: 100%;
+  padding: 0 clamp(8px, 2vw, 32px);
+  max-width: 1400px;
+  z-index: 3;
+}
+
+.keyboard-row {
+  display: flex;
+  gap: clamp(5px, 1vw, 12px);
+  width: 100%;
+  justify-content: center;
+}
+
+.key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: clamp(8px, 1.2vw, 16px);
+  font-weight: 600;
+  font-size: clamp(16px, 3vw, 42px);
+  letter-spacing: -0.01em;
+  user-select: none;
+  cursor: default;
+  will-change: transform, opacity;
+  transition: none;
+  flex: 1;
+  height: clamp(56px, 12vw, 140px);
+  max-width: 140px;
+}
+
+.key--wire {
+  background: transparent;
+  border: clamp(1px, 0.2vw, 2.5px) solid var(--wire-border);
+  color: var(--wire-text);
+}
+
+.key--garnet {
+  background: linear-gradient(160deg, var(--garnet) 0%, var(--garnet-dark) 100%);
+  border: none;
+  color: #fff;
+  box-shadow:
+    0 0 20px rgba(169, 29, 71, 0.15),
+    0 4px 12px rgba(139, 21, 56, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.key--garnet.lower {
+  text-transform: lowercase;
+  font-weight: 500;
+}
+
+.key--space {
+  flex: none;
+  width: min(680px, 72%);
+  max-width: 680px;
+  height: clamp(52px, 9vw, 100px);
+  background: linear-gradient(160deg, var(--garnet) 0%, var(--garnet-dark) 100%);
+  border: none;
+  color: #fff;
+  font-size: clamp(13px, 1.8vw, 22px);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow:
+    0 0 20px rgba(169, 29, 71, 0.12),
+    0 4px 12px rgba(139, 21, 56, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+  border-radius: clamp(10px, 1.5vw, 20px);
+  transition: box-shadow 0.2s ease;
+}
+
+.key--space:hover {
+  box-shadow:
+    0 0 30px rgba(169, 29, 71, 0.25),
+    0 6px 20px rgba(139, 21, 56, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.key--space svg {
+  width: clamp(16px, 2vw, 24px);
+  height: clamp(16px, 2vw, 24px);
+  flex-shrink: 0;
+}
+
+/* =====================================================
+   CONTENT — revealed from below (version 9 approach)
+   ===================================================== */
+
+.content {
+  position: relative;
+  z-index: 10;
+  background: var(--bg);
+}
+
+.content-reveal {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: none;
+  will-change: opacity, transform;
+}
+
+/* =====================================================
+   FEATURES (version 5 styling)
+   ===================================================== */
 
 .features {
-    padding: 120px 24px;
-    max-width: 1060px;
-    margin: 0 auto;
+  padding: 120px clamp(20px, 5vw, 80px);
+  max-width: 1080px;
+  margin: 0 auto;
 }
 
-.features h2 {
-    font-size: 36px;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 64px;
-    letter-spacing: -0.02em;
+.section-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--garnet);
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--text-primary);
+  margin-bottom: 64px;
 }
 
 .features-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
 }
 
-.card {
-    padding: 32px;
-    border: 1px solid var(--card-border);
-    border-radius: 14px;
-    transition: border-color 0.2s ease;
+.feature-card {
+  padding: 36px 32px;
+  border-radius: 16px;
+  border: 1px solid #f0f0f0;
+  background: #fafafa;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.card:hover {
-    border-color: #e5e7eb;
+.feature-card:hover {
+  border-color: #e5e5e5;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
 }
 
-.card h3 {
-    font-size: 17px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    letter-spacing: -0.01em;
+.feature-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(169, 29, 71, 0.08), rgba(139, 21, 56, 0.05));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
-.card p {
-    font-size: 15px;
-    color: var(--text-secondary);
-    line-height: 1.65;
+.feature-icon svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--garnet);
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-/* ── Open Source ── */
+.feature-card h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.feature-card p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* =====================================================
+   OPEN SOURCE (version 5 oss-box style)
+   ===================================================== */
 
 .open-source {
-    padding: 120px 24px;
-    text-align: center;
-    background: #fafafa;
+  padding: 100px clamp(20px, 5vw, 80px);
+  max-width: 1080px;
+  margin: 0 auto;
 }
 
-.open-source h2 {
-    font-size: 36px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    letter-spacing: -0.02em;
+.oss-box {
+  border-radius: 20px;
+  border: 1px solid #f0f0f0;
+  background: #fafafa;
+  padding: 64px;
+  text-align: center;
 }
 
-.open-source-text {
-    font-size: 17px;
-    color: var(--text-secondary);
-    max-width: 520px;
-    margin: 0 auto 40px;
-    line-height: 1.65;
+.oss-box .section-label {
+  margin-bottom: 16px;
 }
 
-.github-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 28px;
-    background: var(--text);
-    color: #fff;
-    text-decoration: none;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: 600;
-    font-family: inherit;
-    transition: background 0.2s ease;
+.oss-box h2 {
+  font-size: clamp(28px, 3.5vw, 40px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  margin-bottom: 16px;
 }
 
-.github-btn:hover {
-    background: #374151;
+.oss-box p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 520px;
+  margin: 0 auto 36px;
 }
 
-.github-links {
-    margin-top: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
+.oss-links {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-.github-links a {
-    font-size: 14px;
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: color 0.15s ease;
+.oss-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
 }
 
-.github-links a:hover {
-    color: var(--text);
+.oss-link svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
-.github-links .separator {
-    width: 3px;
-    height: 3px;
-    border-radius: 50%;
-    background: #d1d5db;
+.oss-link-primary {
+  background: linear-gradient(135deg, var(--garnet), var(--garnet-dark));
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(169, 29, 71, 0.25);
 }
 
-/* ── Footer ── */
-
-footer {
-    padding: 40px 24px;
-    text-align: center;
-    font-size: 13px;
-    color: #9ca3af;
+.oss-link-primary:hover {
+  box-shadow: 0 6px 24px rgba(169, 29, 71, 0.35);
+  transform: translateY(-1px);
 }
 
-/* ── Responsive ── */
-
-@media (max-width: 1024px) {
-    .features-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.oss-link-secondary {
+  background: #fff;
+  color: var(--text-primary);
+  border: 1px solid #e5e5e5;
 }
+
+.oss-link-secondary:hover {
+  border-color: var(--wire-border);
+  background: #f9fafb;
+}
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+
+.footer {
+  padding: 48px 24px;
+  text-align: center;
+  border-top: 1px solid #f0f0f0;
+}
+
+.footer p {
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+.footer a {
+  color: var(--garnet);
+  text-decoration: none;
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
 
 @media (max-width: 640px) {
-    .hero {
-        padding: 48px 20px;
-    }
+  .key {
+    border-radius: clamp(6px, 2vw, 12px);
+    height: clamp(48px, 14vw, 80px);
+  }
 
-    .tagline {
-        font-size: 22px;
-        margin-top: 40px;
-    }
+  .key--space {
+    width: 88%;
+    height: clamp(44px, 12vw, 70px);
+    border-radius: clamp(8px, 2.5vw, 14px);
+  }
 
-    .subtitle {
-        font-size: 15px;
-    }
+  .keyboard {
+    gap: clamp(4px, 1.5vw, 8px);
+  }
 
-    .features {
-        padding: 80px 20px;
-    }
+  .keyboard-row {
+    gap: clamp(3px, 1.2vw, 6px);
+  }
 
-    .features h2,
-    .open-source h2 {
-        font-size: 28px;
-        margin-bottom: 40px;
-    }
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
 
-    .features-grid {
-        grid-template-columns: 1fr;
-    }
+  .oss-box {
+    padding: 40px 24px;
+  }
 
-    .card {
-        padding: 24px;
-    }
+  .oss-links {
+    flex-direction: column;
+    align-items: center;
+  }
 
-    .open-source {
-        padding: 80px 20px;
-    }
+  .hero-title h1 {
+    font-size: clamp(22px, 5.5vw, 36px);
+  }
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
