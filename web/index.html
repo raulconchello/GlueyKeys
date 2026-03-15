@@ -319,12 +319,9 @@
          Then holds briefly and fades out as content below appears. */
     var ctaStart = 0.58;       // begins as garnet keys start visibly leaving
     var ctaFull = 0.84;        // full size/opacity when garnet keys are gone
-    var ctaHoldEnd = 0.89;     // holds at full visibility briefly
-    var ctaFadeEnd = 0.96;     // fully faded out
 
     var ctaIn = Math.min(Math.max((rawProgress - ctaStart) / (ctaFull - ctaStart), 0), 1);
-    var ctaOut = Math.min(Math.max((rawProgress - ctaHoldEnd) / (ctaFadeEnd - ctaHoldEnd), 0), 1);
-    var ctaOpacity = easeOutCubic(ctaIn) * (1 - easeInQuad(ctaOut));
+    var ctaOpacity = easeOutCubic(ctaIn);
     var ctaScale = 0.3 + 0.7 * easeOutCubic(ctaIn);
     heroCta.style.opacity = ctaOpacity;
     heroCta.style.transform = 'translate(-50%, -50%) scale(' + ctaScale + ')';
