@@ -11,8 +11,8 @@
 :root {
   --garnet: #A91D47;
   --garnet-dark: #8B1538;
-  --wire-border: #d1d5db;
-  --wire-text: #c0c5cc;
+  --wire-border: #e5e7eb;
+  --wire-text: #d4d7dc;
   --text-primary: #1a1a1a;
   --text-secondary: #6b7280;
   --text-tertiary: #9ca3af;
@@ -183,9 +183,9 @@ body {
 
 .key--space {
   flex: none;
-  width: min(680px, 72%);
-  max-width: 680px;
-  height: clamp(52px, 9vw, 100px);
+  width: min(500px, 60%);
+  max-width: 500px;
+  height: clamp(48px, 8vw, 88px);
   background: linear-gradient(160deg, var(--garnet) 0%, var(--garnet-dark) 100%);
   border: none;
   color: #fff;
