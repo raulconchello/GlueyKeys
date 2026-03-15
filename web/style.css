@@ -228,8 +228,7 @@ body {
 
 .key--space {
   flex: none;
-  width: min(500px, 60%);
-  max-width: 500px;
+  width: calc(5 * clamp(48px, 8vw, 88px) + 4 * clamp(5px, 1vw, 12px));
   height: clamp(48px, 8vw, 88px);
   background: transparent;
   border: clamp(1px, 0.2vw, 2.5px) solid var(--garnet);
@@ -663,8 +662,8 @@ body {
   }
 
   .key--space {
-    width: 88%;
-    height: clamp(44px, 12vw, 70px);
+    width: calc(5 * clamp(48px, 8vw, 88px) + 4 * clamp(3px, 1.2vw, 6px));
+    height: clamp(48px, 8vw, 88px);
     border-radius: clamp(8px, 2.5vw, 14px);
   }
 
