@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlueyKeys — Auto-switch keyboard layout per physical keyboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --garnet: #A91D47;
+  --garnet-dark: #8B1538;
+  --wireframe-border: #d1d5db;
+  --wireframe-text: #c0c5cc;
+  --white: #ffffff;
+  --bg: #ffffff;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: #1a1a2e;
+  overflow-x: hidden;
+}
+
+/* ============ HERO ============ */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Column streak trails */
+.column-trail {
+  position: fixed;
+  top: 0;
+  width: 4px;
+  height: 0;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  background: linear-gradient(to bottom, transparent, var(--garnet), transparent);
+}
+
+/* ============ KEYBOARD ============ */
+.keyboard-wrap {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(6px, 1vw, 10px);
+  padding: 20px;
+}
+
+.kb-row {
+  display: flex;
+  gap: clamp(6px, 1vw, 10px);
+  justify-content: center;
+}
+
+.key {
+  width: clamp(42px, 7vw, 72px);
+  height: clamp(42px, 7vw, 72px);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(14px, 2vw, 20px);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: transform 0.2s;
+  user-select: none;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.key.wireframe {
+  border: 2px solid var(--wireframe-border);
+  background: transparent;
+  color: var(--wireframe-text);
+}
+
+.key.garnet {
+  background: linear-gradient(135deg, var(--garnet), var(--garnet-dark));
+  color: var(--white);
+  border: none;
+  box-shadow: 0 0 20px rgba(169, 29, 71, 0.25), 0 0 60px rgba(169, 29, 71, 0.1);
+}
+
+.key.spacebar {
+  width: clamp(260px, 50vw, 520px);
+  height: clamp(42px, 6vw, 64px);
+  border-radius: 12px;
+  font-size: clamp(13px, 1.6vw, 17px);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--garnet), var(--garnet-dark));
+  color: var(--white);
+  border: none;
+  box-shadow: 0 0 24px rgba(169, 29, 71, 0.3), 0 0 60px rgba(169, 29, 71, 0.12);
+}
+
+.key.spacebar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 32px rgba(169, 29, 71, 0.4), 0 0 80px rgba(169, 29, 71, 0.18);
+}
+
+.key.spacebar .arrow {
+  display: inline-block;
+  margin-left: 8px;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+/* Scroll hint */
+.scroll-hint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.45;
+  transition: opacity 0.5s;
+}
+
+.scroll-hint span {
+  font-size: 12px;
+  font-weight: 500;
+  color: #9ca3af;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.scroll-hint .chevron {
+  width: 20px;
+  height: 20px;
+  border-right: 2px solid #9ca3af;
+  border-bottom: 2px solid #9ca3af;
+  transform: rotate(45deg);
+  animation: bounce-down 2s ease infinite;
+}
+
+@keyframes bounce-down {
+  0%, 100% { transform: rotate(45deg) translateY(0); }
+  50% { transform: rotate(45deg) translateY(6px); }
+}
+
+/* ============ FEATURES ============ */
+.features-section {
+  position: relative;
+  z-index: 1;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 100px 24px 80px;
+}
+
+.section-label {
+  text-align: center;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800;
+  color: #1a1a2e;
+  margin-bottom: 12px;
+}
+
+.section-sub {
+  text-align: center;
+  font-size: clamp(15px, 1.8vw, 18px);
+  color: #6b7280;
+  margin-bottom: 56px;
+  max-width: 540px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin-bottom: 80px;
+}
+
+.card {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 28px 24px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.card:hover {
+  border-color: var(--garnet);
+  box-shadow: 0 0 0 1px var(--garnet), 0 4px 20px rgba(169, 29, 71, 0.08);
+}
+
+.card-icon {
+  font-size: 28px;
+  margin-bottom: 14px;
+  display: block;
+  width: 48px;
+  height: 48px;
+  line-height: 48px;
+  text-align: center;
+  border-radius: 10px;
+  background: rgba(169, 29, 71, 0.07);
+  color: var(--garnet);
+}
+
+.card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #1a1a2e;
+}
+
+.card p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #6b7280;
+}
+
+/* ============ OPEN SOURCE ============ */
+.open-source {
+  text-align: center;
+  padding: 64px 24px 100px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.open-source h2 {
+  font-size: clamp(26px, 3.5vw, 38px);
+  font-weight: 800;
+  color: #1a1a2e;
+  margin-bottom: 14px;
+}
+
+.open-source p {
+  font-size: clamp(15px, 1.6vw, 17px);
+  color: #6b7280;
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+
+.open-source .btn-row {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-garnet {
+  background: linear-gradient(135deg, var(--garnet), var(--garnet-dark));
+  color: var(--white);
+  box-shadow: 0 4px 16px rgba(169, 29, 71, 0.25);
+}
+
+.btn-garnet:hover {
+  box-shadow: 0 6px 24px rgba(169, 29, 71, 0.35);
+}
+
+.btn-outline {
+  border: 2px solid var(--garnet);
+  color: var(--garnet);
+  background: transparent;
+}
+
+.btn-outline:hover {
+  background: rgba(169, 29, 71, 0.05);
+}
+
+.btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* ============ FOOTER ============ */
+footer {
+  text-align: center;
+  padding: 32px 24px;
+  font-size: 13px;
+  color: #9ca3af;
+  border-top: 1px solid #f3f4f6;
+}
+
+footer a {
+  color: var(--garnet);
+  text-decoration: none;
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero">
+  <div class="keyboard-wrap" id="keyboard">
+    <!-- Row 1: Q W E R T Y U I O P -->
+    <div class="kb-row" id="row1">
+      <div class="key wireframe" data-col="0">Q</div>
+      <div class="key wireframe" data-col="1">W</div>
+      <div class="key wireframe" data-col="2">E</div>
+      <div class="key wireframe" data-col="3">R</div>
+      <div class="key wireframe" data-col="4">T</div>
+      <div class="key wireframe" data-col="5">Y</div>
+      <div class="key wireframe" data-col="6">U</div>
+      <div class="key wireframe" data-col="7">I</div>
+      <div class="key wireframe" data-col="8">O</div>
+      <div class="key wireframe" data-col="9">P</div>
+    </div>
+    <!-- Row 2: G l u e y K e y s -->
+    <div class="kb-row" id="row2">
+      <div class="key garnet" data-col="0">G</div>
+      <div class="key garnet" data-col="1">l</div>
+      <div class="key garnet" data-col="2">u</div>
+      <div class="key garnet" data-col="3">e</div>
+      <div class="key garnet" data-col="4">y</div>
+      <div class="key garnet" data-col="5">K</div>
+      <div class="key garnet" data-col="6">e</div>
+      <div class="key garnet" data-col="7">y</div>
+      <div class="key garnet" data-col="8">s</div>
+    </div>
+    <!-- Row 3: Z X C V B N M -->
+    <div class="kb-row" id="row3">
+      <div class="key wireframe" data-col="1">Z</div>
+      <div class="key wireframe" data-col="2">X</div>
+      <div class="key wireframe" data-col="3">C</div>
+      <div class="key wireframe" data-col="4">V</div>
+      <div class="key wireframe" data-col="5">B</div>
+      <div class="key wireframe" data-col="6">N</div>
+      <div class="key wireframe" data-col="7">M</div>
+    </div>
+    <!-- Spacebar -->
+    <div class="kb-row" id="row-space">
+      <a href="https://github.com/raulconchello/GlueyKeys/releases" class="key spacebar" data-col="4.5">
+        Download for Windows<span class="arrow">&#8595;</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="scroll-hint" id="scrollHint">
+    <span>Scroll</span>
+    <div class="chevron"></div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="features-section" id="features">
+  <h2 class="section-label">Simple by design</h2>
+  <p class="section-sub">GlueyKeys remembers which layout belongs to which keyboard. Plug in and type — no switching, no thinking.</p>
+
+  <div class="cards">
+    <div class="card">
+      <span class="card-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#A91D47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
+      </span>
+      <h3>Automatic detection</h3>
+      <p>Detects each physical keyboard the moment you plug it in. No manual setup or device pairing needed.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#A91D47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="10"/><line x1="10" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="14" y2="10"/><line x1="18" y1="10" x2="18" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/></svg>
+      </span>
+      <h3>Per-keyboard layout</h3>
+      <p>Assign a different language or layout to each keyboard. Switch between QWERTY, AZERTY, or any layout seamlessly.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#A91D47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </span>
+      <h3>Runs in the tray</h3>
+      <p>Sits quietly in your system tray. Zero distraction, zero overhead. Right-click to configure anytime.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#A91D47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </span>
+      <h3>Instant switching</h3>
+      <p>Layout changes the moment you press a key on a different keyboard. No delay, no flicker.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#A91D47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+      </span>
+      <h3>Remembers forever</h3>
+      <p>Your preferences persist across reboots. Set it once and never think about it again.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#A91D47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </span>
+      <h3>Free and open source</h3>
+      <p>MIT licensed, built in the open. Inspect the code, file issues, contribute — it's yours.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OPEN SOURCE ============ -->
+<section class="open-source">
+  <h2>Built in the open</h2>
+  <p>GlueyKeys is open source and community driven. Browse the code, report bugs, or suggest features — every contribution helps.</p>
+  <div class="btn-row">
+    <a href="https://github.com/raulconchello/GlueyKeys" class="btn btn-garnet">
+      <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      View on GitHub
+    </a>
+    <a href="https://github.com/raulconchello/GlueyKeys/issues/new" class="btn btn-outline">
+      Report an issue
+    </a>
+  </div>
+</section>
+
+<footer>
+  GlueyKeys &mdash; by <a href="https://github.com/raulconchello">raulconchello</a>
+</footer>
+
+<script>
+(function() {
+  'use strict';
+
+  // ── Gather all keys and group by column ──
+  const allKeys = Array.from(document.querySelectorAll('.key'));
+  const columns = {};
+
+  allKeys.forEach(key => {
+    const col = parseFloat(key.dataset.col);
+    if (!columns[col]) columns[col] = [];
+    columns[col].push(key);
+  });
+
+  const colIndices = Object.keys(columns).map(Number).sort((a, b) => a - b);
+  const numCols = colIndices.length;
+  const center = (colIndices[0] + colIndices[numCols - 1]) / 2;
+
+  // Compute delay: outside-in. Farthest from center drops first.
+  const maxDist = Math.max(...colIndices.map(c => Math.abs(c - center)));
+
+  function getColumnDelay(colIdx) {
+    const dist = Math.abs(colIdx - center);
+    // Farthest (dist == maxDist) fires first (delay 0), center fires last
+    const normalized = 1 - (dist / (maxDist || 1));
+    return normalized * 400; // ms spread
+  }
+
+  // ── Column trail elements (for garnet columns) ──
+  const garnetCols = new Set();
+  allKeys.forEach(k => {
+    if (k.classList.contains('garnet')) garnetCols.add(parseFloat(k.dataset.col));
+  });
+
+  const trails = {};
+  garnetCols.forEach(colIdx => {
+    const trail = document.createElement('div');
+    trail.className = 'column-trail';
+    document.body.appendChild(trail);
+    trails[colIdx] = trail;
+  });
+
+  // ── Scroll-driven column rain ──
+  let animationTriggered = false;
+  let hasReset = false;
+  const TRIGGER_SCROLL = 80; // px of scroll to trigger
+  const hero = document.getElementById('hero');
+  const scrollHint = document.getElementById('scrollHint');
+
+  function positionTrails() {
+    garnetCols.forEach(colIdx => {
+      const keys = columns[colIdx];
+      if (!keys || !keys.length) return;
+      const first = keys[0];
+      const rect = first.getBoundingClientRect();
+      const trail = trails[colIdx];
+      trail.style.left = (rect.left + rect.width / 2 - 2) + 'px';
+    });
+  }
+
+  function triggerColumnRain() {
+    if (animationTriggered) return;
+    animationTriggered = true;
+
+    if (scrollHint) scrollHint.style.opacity = '0';
+
+    positionTrails();
+
+    colIndices.forEach(colIdx => {
+      const delay = getColumnDelay(colIdx);
+      const keys = columns[colIdx];
+
+      keys.forEach(key => {
+        key.style.transition = 'none';
+        key.style.transform = 'translateY(0)';
+        key.style.opacity = '1';
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            key.style.transition = `transform 0.7s cubic-bezier(0.55, 0, 1, 0.45) ${delay}ms, opacity 0.5s ease ${delay + 200}ms`;
+            key.style.transform = 'translateY(110vh)';
+            key.style.opacity = '0';
+          });
+        });
+      });
+
+      // Garnet trail effect
+      if (garnetCols.has(colIdx)) {
+        const trail = trails[colIdx];
+        setTimeout(() => {
+          trail.style.transition = 'height 0.4s ease-out, opacity 0.4s ease-out';
+          trail.style.opacity = '0.7';
+          trail.style.height = '100vh';
+
+          setTimeout(() => {
+            trail.style.transition = 'opacity 0.6s ease-out';
+            trail.style.opacity = '0';
+          }, 350);
+        }, delay + 100);
+      }
+    });
+  }
+
+  function resetKeys() {
+    if (!animationTriggered) return;
+    animationTriggered = false;
+
+    if (scrollHint) scrollHint.style.opacity = '0.45';
+
+    allKeys.forEach(key => {
+      key.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease';
+      key.style.transform = 'translateY(0)';
+      key.style.opacity = '1';
+    });
+
+    garnetCols.forEach(colIdx => {
+      const trail = trails[colIdx];
+      trail.style.height = '0';
+      trail.style.opacity = '0';
+    });
+
+    hasReset = true;
+  }
+
+  // ── Scroll listener ──
+  let ticking = false;
+
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const scrollY = window.scrollY || window.pageYOffset;
+      if (scrollY > TRIGGER_SCROLL && !animationTriggered) {
+        triggerColumnRain();
+      } else if (scrollY <= 10 && animationTriggered) {
+        resetKeys();
+      }
+      ticking = false;
+    });
+  }, { passive: true });
+
+  // ── Make sure the page is tall enough to scroll ──
+  // (Hero is 100vh, features section provides the extra height)
+
+  // ── Subtle entrance on load ──
+  allKeys.forEach((key, i) => {
+    key.style.opacity = '0';
+    key.style.transform = 'translateY(20px)';
+    setTimeout(() => {
+      key.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease';
+      key.style.transform = 'translateY(0)';
+      key.style.opacity = '1';
+    }, 60 + i * 30);
+  });
+
+  // ── Intersection observer for feature cards ──
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(c => { c.style.opacity = '0'; c.style.transform = 'translateY(24px)'; });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease';
+        entry.target.style.transform = 'translateY(0)';
+        entry.target.style.opacity = '1';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  cards.forEach(c => observer.observe(c));
+})();
+</script>
+</body>
+</html>

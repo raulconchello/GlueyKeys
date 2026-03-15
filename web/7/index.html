@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlueyKeys — Auto-switch keyboard layout per physical keyboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #fff;
+  color: #1a1a1a;
+  overflow-x: hidden;
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  background: #fafafa;
+}
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(6px, 1.2vw, 12px);
+  transform-style: preserve-3d;
+}
+
+.row {
+  display: flex;
+  gap: clamp(5px, 1vw, 10px);
+  transform-style: preserve-3d;
+}
+
+.row:nth-child(2) {
+  padding-left: clamp(12px, 2.5vw, 28px);
+}
+
+.row:nth-child(3) {
+  padding-left: clamp(24px, 5vw, 56px);
+}
+
+/* ── KEY BASE ── */
+.key {
+  width: clamp(38px, 6.5vw, 72px);
+  height: clamp(38px, 6.5vw, 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(13px, 2vw, 20px);
+  font-weight: 600;
+  border-radius: clamp(6px, 1vw, 12px);
+  cursor: default;
+  user-select: none;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  position: relative;
+}
+
+.key.flipped {
+  transform: rotateY(90deg);
+}
+
+/* wireframe keys */
+.key.wire {
+  background: transparent;
+  border: 2px solid #d1d5db;
+  color: #c0c5cc;
+}
+
+/* garnet keys */
+.key.garnet {
+  background: linear-gradient(135deg, #A91D47 0%, #8B1538 100%);
+  border: none;
+  color: #fff;
+  box-shadow: 0 0 20px rgba(169, 29, 71, 0.15);
+}
+
+.key.garnet.flipped {
+  transform: rotateY(90deg);
+}
+
+/* garnet flash on flip */
+.key.garnet.flipping-flash::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(169, 29, 71, 0.5) 0%, transparent 70%);
+  animation: garnetFlash 0.6s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes garnetFlash {
+  0%   { opacity: 0; }
+  30%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ── SPACE BAR ── */
+.spacebar-row {
+  margin-top: clamp(6px, 1.2vw, 12px);
+  transform-style: preserve-3d;
+}
+
+.spacebar {
+  width: clamp(220px, 40vw, 460px);
+  height: clamp(38px, 6.5vw, 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(13px, 1.8vw, 18px);
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #A91D47 0%, #8B1538 100%);
+  border: none;
+  border-radius: clamp(6px, 1vw, 12px);
+  text-decoration: none;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+  will-change: transform;
+  box-shadow: 0 4px 24px rgba(169, 29, 71, 0.25);
+  position: relative;
+}
+
+.spacebar:hover {
+  box-shadow: 0 6px 32px rgba(169, 29, 71, 0.4);
+}
+
+.spacebar.flipped {
+  transform: rotateY(90deg);
+}
+
+.spacebar .arrow {
+  display: inline-block;
+  font-size: clamp(14px, 2vw, 20px);
+  line-height: 1;
+}
+
+/* scroll hint */
+.scroll-hint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.45;
+  animation: hintPulse 2s ease-in-out infinite;
+}
+
+.scroll-hint span {
+  font-size: 12px;
+  font-weight: 500;
+  color: #999;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.scroll-hint .chevron {
+  width: 20px;
+  height: 20px;
+  border-right: 2px solid #bbb;
+  border-bottom: 2px solid #bbb;
+  transform: rotate(45deg);
+}
+
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.45; transform: translateX(-50%) translateY(0); }
+  50%      { opacity: 0.7;  transform: translateX(-50%) translateY(6px); }
+}
+
+/* ── SECTIONS BELOW ── */
+.content {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 100px 24px 80px;
+}
+
+.section-title {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 48px;
+  text-align: center;
+}
+
+/* ── FEATURE CARDS ── */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin-bottom: 120px;
+}
+
+.feature-card {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 32px 28px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  border-color: #A91D47;
+  box-shadow: 0 2px 16px rgba(169, 29, 71, 0.08);
+}
+
+.feature-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(169, 29, 71, 0.1) 0%, rgba(139, 21, 56, 0.06) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.feature-card h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #1a1a1a;
+}
+
+.feature-card p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #6b7280;
+}
+
+/* ── OPEN SOURCE ── */
+.open-source {
+  text-align: center;
+  padding: 64px 28px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 18px;
+  margin-bottom: 40px;
+}
+
+.open-source h2 {
+  font-size: clamp(24px, 3.5vw, 36px);
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.open-source p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #6b7280;
+  max-width: 520px;
+  margin: 0 auto 32px;
+}
+
+.open-source-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.btn-garnet {
+  background: linear-gradient(135deg, #A91D47 0%, #8B1538 100%);
+  color: #fff;
+  border: none;
+}
+
+.btn-garnet:hover {
+  box-shadow: 0 4px 20px rgba(169, 29, 71, 0.35);
+}
+
+.btn-outline {
+  background: transparent;
+  color: #A91D47;
+  border: 1.5px solid #A91D47;
+}
+
+.btn-outline:hover {
+  background: rgba(169, 29, 71, 0.05);
+}
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  padding: 40px 24px;
+  font-size: 13px;
+  color: #aaa;
+}
+
+.footer a {
+  color: #A91D47;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+</style>
+</head>
+<body>
+
+<!-- ────────── HERO ────────── -->
+<section class="hero">
+  <div class="keyboard" id="keyboard">
+    <!-- Row 1: QWERTYUIOP -->
+    <div class="row">
+      <div class="key wire" data-col="0" data-row="0">Q</div>
+      <div class="key wire" data-col="1" data-row="0">W</div>
+      <div class="key wire" data-col="2" data-row="0">E</div>
+      <div class="key wire" data-col="3" data-row="0">R</div>
+      <div class="key wire" data-col="4" data-row="0">T</div>
+      <div class="key wire" data-col="5" data-row="0">Y</div>
+      <div class="key wire" data-col="6" data-row="0">U</div>
+      <div class="key wire" data-col="7" data-row="0">I</div>
+      <div class="key wire" data-col="8" data-row="0">O</div>
+      <div class="key wire" data-col="9" data-row="0">P</div>
+    </div>
+    <!-- Row 2: GlueyKeys -->
+    <div class="row">
+      <div class="key garnet" data-col="0" data-row="1">G</div>
+      <div class="key garnet" data-col="1" data-row="1">l</div>
+      <div class="key garnet" data-col="2" data-row="1">u</div>
+      <div class="key garnet" data-col="3" data-row="1">e</div>
+      <div class="key garnet" data-col="4" data-row="1">y</div>
+      <div class="key garnet" data-col="5" data-row="1">K</div>
+      <div class="key garnet" data-col="6" data-row="1">e</div>
+      <div class="key garnet" data-col="7" data-row="1">y</div>
+      <div class="key garnet" data-col="8" data-row="1">s</div>
+    </div>
+    <!-- Row 3: ZXCVBNM -->
+    <div class="row">
+      <div class="key wire" data-col="0" data-row="2">Z</div>
+      <div class="key wire" data-col="1" data-row="2">X</div>
+      <div class="key wire" data-col="2" data-row="2">C</div>
+      <div class="key wire" data-col="3" data-row="2">V</div>
+      <div class="key wire" data-col="4" data-row="2">B</div>
+      <div class="key wire" data-col="5" data-row="2">N</div>
+      <div class="key wire" data-col="6" data-row="2">M</div>
+    </div>
+    <!-- Space bar -->
+    <div class="spacebar-row">
+      <a class="spacebar" href="https://github.com/raulconchello/GlueyKeys/releases" data-col="4" data-row="3">
+        Download for Windows <span class="arrow">&darr;</span>
+      </a>
+    </div>
+  </div>
+  <div class="scroll-hint" id="scrollHint">
+    <span>Scroll</span>
+    <div class="chevron"></div>
+  </div>
+</section>
+
+<!-- ────────── FEATURES ────────── -->
+<section class="content">
+  <h2 class="section-title">Simple by design</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A91D47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="10"/><line x1="10" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="14" y2="10"/><line x1="18" y1="10" x2="18" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/></svg>
+      </div>
+      <h3>Per-keyboard layouts</h3>
+      <p>Assign a different input language to each physical keyboard plugged into your machine. It just remembers.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A91D47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <h3>Instant switching</h3>
+      <p>The moment you press a key, GlueyKeys detects which keyboard it came from and switches layout instantly.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A91D47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      </div>
+      <h3>Runs quietly</h3>
+      <p>Lives in your system tray. No pop-ups, no interruptions. It stays out of your way until you need it.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A91D47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </div>
+      <h3>Easy setup</h3>
+      <p>Install, pick a layout for each keyboard, done. No drivers, no registry hacks, no restarts needed.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A91D47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+      </div>
+      <h3>Any keyboard</h3>
+      <p>USB, Bluetooth, built-in laptop keyboard, wireless dongles. If Windows sees it, GlueyKeys can manage it.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A91D47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>
+      </div>
+      <h3>Lightweight</h3>
+      <p>Tiny footprint. Minimal CPU and memory usage. Starts with Windows and never slows you down.</p>
+    </div>
+  </div>
+
+  <!-- ── OPEN SOURCE ── -->
+  <div class="open-source">
+    <h2>Built in the open</h2>
+    <p>GlueyKeys is open source. Browse the code, report issues, or contribute on GitHub.</p>
+    <div class="open-source-links">
+      <a class="btn btn-garnet" href="https://github.com/raulconchello/GlueyKeys" target="_blank" rel="noopener">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        View on GitHub
+      </a>
+      <a class="btn btn-outline" href="https://github.com/raulconchello/GlueyKeys/issues/new" target="_blank" rel="noopener">
+        Report an issue
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <a href="https://github.com/raulconchello/GlueyKeys">GlueyKeys</a> &mdash; auto-switch keyboard layout per physical keyboard.
+</footer>
+
+<!-- ────────── FLIP & VANISH SCRIPT ────────── -->
+<script>
+(function () {
+  const keys = document.querySelectorAll('.key');
+  const spacebar = document.querySelector('.spacebar');
+  const scrollHint = document.getElementById('scrollHint');
+  const hero = document.querySelector('.hero');
+
+  // Collect all flippable elements with their diagonal index
+  const flippables = [];
+
+  keys.forEach(key => {
+    const col = parseInt(key.dataset.col, 10);
+    const row = parseInt(key.dataset.row, 10);
+    flippables.push({ el: key, diag: col + row, isGarnet: key.classList.contains('garnet') });
+  });
+
+  // Spacebar is last in the wave
+  const spacebarDiag = 4 + 3; // center column + row 3
+  flippables.push({ el: spacebar, diag: spacebarDiag, isGarnet: true });
+
+  // Find max diagonal for normalization
+  const maxDiag = Math.max(...flippables.map(f => f.diag));
+
+  // Track state
+  let flippedState = false;
+  let isAnimating = false;
+  let scrollAccumulator = 0;
+  const SCROLL_THRESHOLD = 300; // pixels of scroll to trigger full flip
+
+  // Flip all keys in diagonal wave
+  function flipKeys(toFlipped) {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    const baseDelay = 35; // ms between diagonal waves
+
+    flippables.forEach(({ el, diag, isGarnet }) => {
+      const delay = toFlipped
+        ? diag * baseDelay
+        : (maxDiag - diag) * baseDelay;
+
+      setTimeout(() => {
+        if (toFlipped) {
+          el.classList.add('flipped');
+          if (isGarnet) {
+            el.classList.add('flipping-flash');
+            setTimeout(() => el.classList.remove('flipping-flash'), 600);
+          }
+        } else {
+          el.classList.remove('flipped');
+          if (isGarnet) {
+            el.classList.add('flipping-flash');
+            setTimeout(() => el.classList.remove('flipping-flash'), 600);
+          }
+        }
+      }, delay);
+    });
+
+    // Animation complete after last key
+    const totalDuration = maxDiag * baseDelay + 600;
+    setTimeout(() => {
+      isAnimating = false;
+      if (toFlipped) {
+        // After flip, smooth scroll down to content
+        window.scrollTo({ top: hero.offsetHeight, behavior: 'smooth' });
+      }
+    }, totalDuration);
+  }
+
+  // Scroll handler
+  function onWheel(e) {
+    const heroRect = hero.getBoundingClientRect();
+    const inHero = heroRect.top <= 0 && heroRect.bottom > window.innerHeight * 0.5;
+    const atTop = window.scrollY < 10;
+
+    if (atTop && !flippedState && e.deltaY > 0) {
+      e.preventDefault();
+      scrollAccumulator += Math.abs(e.deltaY);
+
+      if (scrollAccumulator >= SCROLL_THRESHOLD) {
+        scrollAccumulator = 0;
+        flippedState = true;
+        flipKeys(true);
+
+        // Fade out scroll hint
+        scrollHint.style.transition = 'opacity 0.4s ease';
+        scrollHint.style.opacity = '0';
+      }
+      return;
+    }
+
+    if (flippedState && window.scrollY < 10 && e.deltaY < 0) {
+      e.preventDefault();
+      scrollAccumulator += Math.abs(e.deltaY);
+
+      if (scrollAccumulator >= SCROLL_THRESHOLD) {
+        scrollAccumulator = 0;
+        flippedState = false;
+        flipKeys(false);
+
+        // Bring back scroll hint
+        setTimeout(() => {
+          scrollHint.style.opacity = '';
+        }, 800);
+      }
+      return;
+    }
+
+    // Reset accumulator if scrolling the opposite way or in other regions
+    if ((!atTop || e.deltaY < 0) && !flippedState) {
+      scrollAccumulator = 0;
+    }
+    if (flippedState && (window.scrollY >= 10 || e.deltaY > 0)) {
+      scrollAccumulator = 0;
+    }
+  }
+
+  window.addEventListener('wheel', onWheel, { passive: false });
+
+  // Touch support
+  let touchStartY = 0;
+
+  window.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  window.addEventListener('touchmove', (e) => {
+    const deltaY = touchStartY - e.touches[0].clientY;
+    const atTop = window.scrollY < 10;
+
+    if (atTop && !flippedState && deltaY > 60) {
+      flippedState = true;
+      flipKeys(true);
+      scrollHint.style.transition = 'opacity 0.4s ease';
+      scrollHint.style.opacity = '0';
+    }
+
+    if (flippedState && window.scrollY < 10 && deltaY < -60) {
+      flippedState = false;
+      flipKeys(false);
+      setTimeout(() => {
+        scrollHint.style.opacity = '';
+      }, 800);
+    }
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
