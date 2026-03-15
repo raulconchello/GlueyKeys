@@ -204,11 +204,11 @@
     // Scatter magnitude: garnet keys scatter MOST dramatically (last and biggest)
     var magnitude = isGarnet ? 2.4 : isSpace ? 1.8 : 1;
 
-    // Delay: garnet keys start animating LATER in the scroll (scatter LAST)
-    // Wire keys scatter first, space bar mid, garnet last
-    var delay = isGarnet ? 0.30 + seededRandom() * 0.12
-              : isSpace  ? 0.18
-              : seededRandom() * 0.08;
+    // Delay: garnet keys start animating MUCH LATER so GlueyKeys is readable alone
+    // Wire keys and space scatter early, garnet holds until they're fully gone
+    var delay = isGarnet ? 0.55 + seededRandom() * 0.10
+              : isSpace  ? 0.10
+              : seededRandom() * 0.06;
 
     // Random direction angle
     var angle;
