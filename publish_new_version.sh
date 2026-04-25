@@ -51,7 +51,7 @@ fi
 
 # --- Read current version from .csproj ---
 CSPROJ="GlueyKeys/GlueyKeys.csproj"
-CURRENT_VERSION="$(grep -oP '<Version>\K[^<]+' "$CSPROJ")"
+CURRENT_VERSION="$(sed -n 's|.*<Version>\(.*\)</Version>.*|\1|p' "$CSPROJ" | head -n 1)"
 if [[ -z "$CURRENT_VERSION" ]]; then
     echo "Error: could not read <Version> from $CSPROJ"
     exit 1
