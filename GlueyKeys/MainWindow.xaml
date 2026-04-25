@@ -28,11 +28,7 @@
 
         <!-- Top Options Row -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
-            <CheckBox x:Name="EnabledCheckBox" Content="Enabled"
-                      IsChecked="{Binding IsEnabled, Mode=TwoWay}"
-                      Checked="EnabledCheckBox_Changed" Unchecked="EnabledCheckBox_Changed"/>
             <CheckBox x:Name="RunAtStartupCheckBox" Content="Run at startup"
-                      Margin="20,5,5,5"
                       Checked="RunAtStartupCheckBox_Changed" Unchecked="RunAtStartupCheckBox_Changed"/>
             <CheckBox x:Name="ShowNotificationsCheckBox" Content="Show notifications"
                       Margin="20,5,5,5"

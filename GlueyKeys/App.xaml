@@ -17,7 +17,6 @@
                 <tb:TaskbarIcon.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Settings" Command="{Binding ShowSettingsCommand}" />
-                        <MenuItem Header="Enabled" IsCheckable="True" IsChecked="{Binding IsEnabled, Mode=TwoWay}" />
                         <MenuItem Header="Check for updates" Command="{Binding CheckForUpdatesCommand}" />
                         <Separator />
                         <MenuItem Header="Uninstall" Command="{Binding UninstallCommand}" />

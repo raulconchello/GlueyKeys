@@ -20,16 +20,9 @@ public partial class MainWindow : Window
     private bool _hasUnsavedChanges;
 
     // Pending settings (not saved until Save button is clicked)
-    private bool _pendingEnabled;
     private bool _pendingRunAtStartup;
     private bool _pendingShowNotifications;
     private Dictionary<string, (string? layoutId, bool isEnabled)> _pendingKeyboardChanges = new();
-
-    public new bool IsEnabled
-    {
-        get => AppInstance.IsEnabled;
-        set => AppInstance.IsEnabled = value;
-    }
 
     public MainWindow()
     {
@@ -44,11 +37,9 @@ public partial class MainWindow : Window
         _isInitializing = true;
 
         // Load current settings
-        _pendingEnabled = Settings.Settings.IsEnabled;
         _pendingRunAtStartup = StartupService.IsStartupEnabled();
         _pendingShowNotifications = Settings.Settings.ShowNotifications;
 
-        EnabledCheckBox.IsChecked = _pendingEnabled;
         RunAtStartupCheckBox.IsChecked = _pendingRunAtStartup;
         ShowNotificationsCheckBox.IsChecked = _pendingShowNotifications;
 
@@ -93,14 +84,6 @@ public partial class MainWindow : Window
     {
         _hasUnsavedChanges = true;
         SaveButton.IsEnabled = true;
-    }
-
-    private void EnabledCheckBox_Changed(object sender, RoutedEventArgs e)
-    {
-        if (_isInitializing) return;
-
-        _pendingEnabled = EnabledCheckBox.IsChecked ?? true;
-        MarkAsChanged();
     }
 
     private void RunAtStartupCheckBox_Changed(object sender, RoutedEventArgs e)
@@ -167,9 +150,6 @@ public partial class MainWindow : Window
 
     private void SaveButton_Click(object sender, RoutedEventArgs e)
     {
-        // Apply global settings
-        IsEnabled = _pendingEnabled;
-
         StartupService.SetStartup(_pendingRunAtStartup);
         Settings.UpdateSettings(s => s.RunAtStartup = _pendingRunAtStartup);
 
@@ -207,7 +187,6 @@ public partial class MainWindow : Window
 
         // Reset UI to saved state
         _isInitializing = true;
-        EnabledCheckBox.IsChecked = Settings.Settings.IsEnabled;
         RunAtStartupCheckBox.IsChecked = StartupService.IsStartupEnabled();
         ShowNotificationsCheckBox.IsChecked = Settings.Settings.ShowNotifications;
         RefreshKeyboards();

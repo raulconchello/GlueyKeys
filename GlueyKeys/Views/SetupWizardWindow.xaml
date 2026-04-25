@@ -54,23 +54,6 @@
                     </Grid>
                 </Border>
 
-                <!-- Enable automatic switching -->
-                <Border BorderBrush="#DDD" BorderThickness="1" CornerRadius="4" Padding="15" Margin="0,0,0,15">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0">
-                            <TextBlock Text="Enable automatic switching" FontWeight="SemiBold" FontSize="14"/>
-                            <TextBlock Text="Automatically switch layout when you type on a different keyboard"
-                                       Foreground="Gray" FontSize="12" Margin="0,3,0,0"/>
-                        </StackPanel>
-                        <CheckBox x:Name="EnabledCheckBox" Grid.Column="1"
-                                  VerticalAlignment="Center" IsChecked="True"/>
-                    </Grid>
-                </Border>
-
                 <!-- Desktop shortcut -->
                 <Border BorderBrush="#DDD" BorderThickness="1" CornerRadius="4" Padding="15" Margin="0,0,0,15">
                     <Grid>

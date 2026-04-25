@@ -6,7 +6,6 @@ public partial class SetupWizardWindow : Window
 {
     public bool RunAtStartup => RunAtStartupCheckBox.IsChecked ?? true;
     public bool ShowNotifications => ShowNotificationsCheckBox.IsChecked ?? true;
-    public bool EnableSwitching => EnabledCheckBox.IsChecked ?? true;
     public bool CreateDesktopShortcut => DesktopShortcutCheckBox.IsChecked ?? false;
     public bool CreateStartMenuShortcut => StartMenuShortcutCheckBox.IsChecked ?? false;
 

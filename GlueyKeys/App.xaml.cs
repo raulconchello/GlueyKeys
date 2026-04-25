@@ -1,7 +1,5 @@
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using Hardcodet.Wpf.TaskbarNotification;
@@ -11,7 +9,7 @@ using GlueyKeys.Views;
 
 namespace GlueyKeys;
 
-public partial class App : Application, INotifyPropertyChanged
+public partial class App : Application
 {
     private static Mutex? _mutex;
     private TaskbarIcon? _trayIcon;
@@ -29,23 +27,8 @@ public partial class App : Application, INotifyPropertyChanged
 
     // State
     private string? _lastKeyboardDeviceId;
-    private bool _isEnabled = true;
     private bool _isCheckingForUpdates;
     private PressKeyPromptWindow? _pressKeyPrompt;
-
-    public bool IsEnabled
-    {
-        get => _isEnabled;
-        set
-        {
-            if (_isEnabled != value)
-            {
-                _isEnabled = value;
-                SettingsService.UpdateSettings(s => s.IsEnabled = value);
-                OnPropertyChanged();
-            }
-        }
-    }
 
     // Commands
     public ICommand ShowSettingsCommand { get; }
@@ -126,13 +109,11 @@ public partial class App : Application, INotifyPropertyChanged
                     s.FirstRunPromptShown = false;
                     s.RunAtStartup = wizard.RunAtStartup;
                     s.ShowNotifications = wizard.ShowNotifications;
-                    s.IsEnabled = wizard.EnableSwitching;
                 });
 
                 // Apply startup setting (uses installed path)
                 StartupService.SetStartup(wizard.RunAtStartup);
 
-                _isEnabled = wizard.EnableSwitching;
                 NotificationService.Enabled = wizard.ShowNotifications;
 
                 if (!InstallationService.IsInstalledInProperLocation())
@@ -155,7 +136,6 @@ public partial class App : Application, INotifyPropertyChanged
         }
         else
         {
-            _isEnabled = SettingsService.Settings.IsEnabled;
             NotificationService.Enabled = SettingsService.Settings.ShowNotifications;
 
             // Show "press key" prompt on first run after installer
@@ -187,9 +167,6 @@ public partial class App : Application, INotifyPropertyChanged
 
     private void OnKeyboardInput(object? sender, KeyboardInputEventArgs e)
     {
-        if (!_isEnabled)
-            return;
-
         var keyboard = KeyboardEnumerationService.GetDeviceByHandle(e.DeviceHandle);
         if (keyboard == null)
         {
@@ -566,13 +543,6 @@ public partial class App : Application, INotifyPropertyChanged
         _trayIcon?.Dispose();
         RawInputService.Dispose();
         base.OnExit(e);
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
 

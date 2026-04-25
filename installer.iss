@@ -102,11 +102,10 @@ begin
   else
     RunAtStartup := 'false';
 
-  // Build JSON content (isEnabled is always true)
+  // Build JSON content
   JsonContent := '{' + #13#10 +
     '  "setupCompleted": true,' + #13#10 +
     '  "firstRunPromptShown": false,' + #13#10 +
-    '  "isEnabled": true,' + #13#10 +
     '  "runAtStartup": ' + RunAtStartup + ',' + #13#10 +
     '  "showNotifications": ' + ShowNotifications + ',' + #13#10 +
     '  "keyboardMappings": []' + #13#10 +

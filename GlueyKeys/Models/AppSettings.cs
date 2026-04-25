@@ -4,7 +4,6 @@ public class AppSettings
 {
     public bool SetupCompleted { get; set; } = false;
     public bool FirstRunPromptShown { get; set; } = false;
-    public bool IsEnabled { get; set; } = true;
     public bool RunAtStartup { get; set; } = false;
     public bool ShowNotifications { get; set; } = true;
     public DateTime? LastUpdateCheckUtc { get; set; }
