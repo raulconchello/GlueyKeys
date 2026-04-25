@@ -46,7 +46,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Tasks]
 ; Shortcuts (unchecked by default)
 Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription: "Shortcuts:"; Flags: unchecked
-Name: "startmenuicon"; Description: "Create a Start menu shortcut"; GroupDescription: "Shortcuts:"; Flags: unchecked
 ; App settings (checked by default - no flags means checked)
 Name: "runstartup"; Description: "Run at Windows startup"; GroupDescription: "Application Settings:"
 Name: "shownotifications"; Description: "Show notifications when keyboard layout changes"; GroupDescription: "Application Settings:"
@@ -56,8 +55,8 @@ Name: "shownotifications"; Description: "Show notifications when keyboard layout
 Source: "{#MyAppSourceDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: startmenuicon
-Name: "{group}\Uninstall {#MyAppName}"; Filename: "{uninstallexe}"; Tasks: startmenuicon
+Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+Name: "{group}\Uninstall {#MyAppName}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Registry]

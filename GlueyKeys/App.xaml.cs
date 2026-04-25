@@ -73,6 +73,7 @@ public partial class App : Application
         if (InstallationService.IsInstalledInProperLocation())
         {
             InstallationService.RegisterInWindows();
+            InstallationService.CreateStartMenuShortcut();
         }
 
         // Show setup wizard on first run (only if not installed via installer)
@@ -98,10 +99,7 @@ public partial class App : Application
                 {
                     InstallationService.CreateDesktopShortcut();
                 }
-                if (wizard.CreateStartMenuShortcut)
-                {
-                    InstallationService.CreateStartMenuShortcut();
-                }
+                InstallationService.CreateStartMenuShortcut();
 
                 // Apply wizard settings
                 SettingsService.UpdateSettings(s =>
