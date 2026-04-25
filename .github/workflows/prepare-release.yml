@@ -1,0 +1,197 @@
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version bump to apply when no override is provided
+        required: true
+        default: patch
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      version_override:
+        description: Optional exact version, for example 0.0.4
+        required: false
+        type: string
+      release_notes:
+        description: Release notes for the GitHub release
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    name: Bump Version And Tag
+    runs-on: windows-latest
+
+    steps:
+      - name: Require main branch
+        shell: pwsh
+        run: |
+          if ("${{ github.ref }}" -ne "refs/heads/main") {
+            throw "Prepare Release must be run from the main branch."
+          }
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve release version
+        shell: pwsh
+        run: |
+          $projectPath = "GlueyKeys/GlueyKeys.csproj"
+          $project = Get-Content -Raw -LiteralPath $projectPath
+          $currentVersion = [regex]::Match($project, "<Version>([^<]+)</Version>").Groups[1].Value
+
+          if ($currentVersion -notmatch "^\d+\.\d+\.\d+$") {
+            throw "Could not read a valid current version from $projectPath."
+          }
+
+          $override = "${{ inputs.version_override }}".Trim()
+          if ($override.Length -gt 0) {
+            $newVersion = $override
+          } else {
+            $parts = $currentVersion.Split(".") | ForEach-Object { [int]$_ }
+            switch ("${{ inputs.bump }}") {
+              "major" {
+                $parts[0] += 1
+                $parts[1] = 0
+                $parts[2] = 0
+              }
+              "minor" {
+                $parts[1] += 1
+                $parts[2] = 0
+              }
+              default {
+                $parts[2] += 1
+              }
+            }
+            $newVersion = "$($parts[0]).$($parts[1]).$($parts[2])"
+          }
+
+          if ($newVersion -notmatch "^\d+\.\d+\.\d+$") {
+            throw "Release version must use the form X.Y.Z."
+          }
+
+          $tag = "v$newVersion"
+          git fetch --tags
+          $existingLocalTag = git tag --list $tag
+          $existingRemoteTag = git ls-remote --tags origin "refs/tags/$tag"
+
+          if ($existingLocalTag -or $existingRemoteTag) {
+            throw "Tag $tag already exists."
+          }
+
+          "CURRENT_VERSION=$currentVersion" >> $env:GITHUB_ENV
+          "RELEASE_VERSION=$newVersion" >> $env:GITHUB_ENV
+          "RELEASE_TAG=$tag" >> $env:GITHUB_ENV
+
+      - name: Update release files
+        shell: pwsh
+        run: |
+          $version = $env:RELEASE_VERSION
+          $tag = $env:RELEASE_TAG
+
+          function Update-File {
+            param(
+              [string] $Path,
+              [string] $Pattern,
+              [string] $Replacement
+            )
+
+            $content = Get-Content -Raw -LiteralPath $Path
+            $updated = [regex]::Replace($content, $Pattern, $Replacement)
+
+            if ($content -eq $updated) {
+              throw "No replacement was made in $Path."
+            }
+
+            [System.IO.File]::WriteAllText((Resolve-Path -LiteralPath $Path), $updated, [System.Text.UTF8Encoding]::new($false))
+          }
+
+          Update-File "GlueyKeys/GlueyKeys.csproj" "<Version>[^<]+</Version>" "<Version>$version</Version>"
+          Update-File "GlueyKeys/app.manifest" 'version="\d+\.\d+\.\d+\.0"' "version=""$version.0"""
+          Update-File "GlueyKeys/Services/InstallationService.cs" 'AppVersion = "[^"]+"' "AppVersion = ""$version"""
+          Update-File "installer.iss" '#define MyAppVersion "[^"]+"' "#define MyAppVersion ""$version"""
+          Update-File "web/index.html" '/releases/download/v\d+\.\d+\.\d+/GlueyKeys\.exe' "/releases/download/$tag/GlueyKeys.exe"
+
+      - name: Verify release files
+        shell: pwsh
+        run: |
+          $version = $env:RELEASE_VERSION
+          $tag = $env:RELEASE_TAG
+
+          $project = Get-Content -Raw -LiteralPath "GlueyKeys/GlueyKeys.csproj"
+          $manifest = Get-Content -Raw -LiteralPath "GlueyKeys/app.manifest"
+          $installerService = Get-Content -Raw -LiteralPath "GlueyKeys/Services/InstallationService.cs"
+          $installerScript = Get-Content -Raw -LiteralPath "installer.iss"
+          $website = Get-Content -Raw -LiteralPath "web/index.html"
+
+          if ($project -notmatch "<Version>$version</Version>") { throw "Project version was not updated." }
+          if ($manifest -notmatch "version=`"$version\.0`"") { throw "Manifest version was not updated." }
+          if ($installerService -notmatch "AppVersion = `"$version`"") { throw "InstallationService version was not updated." }
+          if ($installerScript -notmatch "#define MyAppVersion `"$version`"") { throw "installer.iss version was not updated." }
+          if ($website -notmatch "/releases/download/$tag/GlueyKeys\.exe") { throw "Website download link was not updated." }
+
+      - name: Commit and tag release
+        shell: pwsh
+        env:
+          RELEASE_NOTES: ${{ inputs.release_notes }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add GlueyKeys/GlueyKeys.csproj GlueyKeys/app.manifest GlueyKeys/Services/InstallationService.cs installer.iss web/index.html
+          git commit -m "Release $env:RELEASE_TAG"
+          git tag -a $env:RELEASE_TAG -m "$env:RELEASE_NOTES"
+
+          git push origin HEAD:main
+          git push origin $env:RELEASE_TAG
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build standalone executable
+        shell: pwsh
+        run: |
+          dotnet publish .\GlueyKeys\GlueyKeys.csproj `
+            -c Release `
+            -r win-x64 `
+            --self-contained true `
+            -o .\publish `
+            -p:Version=$env:RELEASE_VERSION `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -p:EnableCompressionInSingleFile=true
+
+          $exe = Get-Item -LiteralPath ".\publish\GlueyKeys.exe"
+          if ($exe.Length -lt 10000000) {
+            throw "GlueyKeys.exe is unexpectedly small: $($exe.Length) bytes."
+          }
+
+          "Built $($exe.Name) ($($exe.Length) bytes)." >> $env:GITHUB_STEP_SUMMARY
+
+      - name: Create GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_NOTES: ${{ inputs.release_notes }}
+        run: |
+          $notesFile = New-TemporaryFile
+          Set-Content -LiteralPath $notesFile -Value $env:RELEASE_NOTES -Encoding UTF8
+
+          gh release create $env:RELEASE_TAG .\publish\GlueyKeys.exe --title "GlueyKeys $env:RELEASE_TAG" --notes-file $notesFile
+
+      - name: Summary
+        shell: pwsh
+        run: |
+          "Prepared $env:RELEASE_TAG from $env:CURRENT_VERSION to $env:RELEASE_VERSION." >> $env:GITHUB_STEP_SUMMARY
+          "Published https://github.com/${{ github.repository }}/releases/tag/$env:RELEASE_TAG" >> $env:GITHUB_STEP_SUMMARY

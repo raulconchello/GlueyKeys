@@ -1,0 +1,107 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to publish, for example v0.0.4
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Build And Publish
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Validate release source
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $tag = "${{ inputs.tag }}"
+          } else {
+            $tag = "${{ github.ref_name }}"
+          }
+
+          if ($tag -notmatch "^v\d+\.\d+\.\d+$") {
+            throw "Tag $tag does not match vX.Y.Z."
+          }
+
+          $version = $tag.Substring(1)
+          "RELEASE_TAG=$tag" >> $env:GITHUB_ENV
+          "RELEASE_VERSION=$version" >> $env:GITHUB_ENV
+
+          $project = Get-Content -Raw -LiteralPath "GlueyKeys/GlueyKeys.csproj"
+          $manifest = Get-Content -Raw -LiteralPath "GlueyKeys/app.manifest"
+          $installerService = Get-Content -Raw -LiteralPath "GlueyKeys/Services/InstallationService.cs"
+          $installerScript = Get-Content -Raw -LiteralPath "installer.iss"
+          $website = Get-Content -Raw -LiteralPath "web/index.html"
+
+          if ($project -notmatch "<Version>$version</Version>") { throw "Project version does not match $tag." }
+          if ($manifest -notmatch "version=`"$version\.0`"") { throw "Manifest version does not match $tag." }
+          if ($installerService -notmatch "AppVersion = `"$version`"") { throw "InstallationService version does not match $tag." }
+          if ($installerScript -notmatch "#define MyAppVersion `"$version`"") { throw "installer.iss version does not match $tag." }
+          if ($website -notmatch "/releases/download/$tag/GlueyKeys\.exe") { throw "Website download link does not match $tag." }
+
+      - name: Build standalone executable
+        shell: pwsh
+        run: |
+          dotnet publish .\GlueyKeys\GlueyKeys.csproj `
+            -c Release `
+            -r win-x64 `
+            --self-contained true `
+            -o .\publish `
+            -p:Version=$env:RELEASE_VERSION `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -p:EnableCompressionInSingleFile=true
+
+          $exe = Get-Item -LiteralPath ".\publish\GlueyKeys.exe"
+          if ($exe.Length -lt 10000000) {
+            throw "GlueyKeys.exe is unexpectedly small: $($exe.Length) bytes."
+          }
+
+          "Built $($exe.Name) ($($exe.Length) bytes)." >> $env:GITHUB_STEP_SUMMARY
+
+      - name: Create GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $notes = git for-each-ref "refs/tags/$env:RELEASE_TAG" "--format=%(contents)"
+          if ([string]::IsNullOrWhiteSpace($notes)) {
+            $notes = "Release $env:RELEASE_TAG"
+          }
+
+          $notesFile = New-TemporaryFile
+          Set-Content -LiteralPath $notesFile -Value $notes -Encoding UTF8
+
+          $ErrorActionPreference = "Continue"
+          gh release view $env:RELEASE_TAG *> $null
+          $releaseViewExitCode = $LASTEXITCODE
+          $ErrorActionPreference = "Stop"
+
+          if ($releaseViewExitCode -eq 0) {
+            gh release upload $env:RELEASE_TAG .\publish\GlueyKeys.exe --clobber
+          } else {
+            gh release create $env:RELEASE_TAG .\publish\GlueyKeys.exe --title "GlueyKeys $env:RELEASE_TAG" --notes-file $notesFile
+          }
+
+          "Published https://github.com/${{ github.repository }}/releases/tag/$env:RELEASE_TAG" >> $env:GITHUB_STEP_SUMMARY
