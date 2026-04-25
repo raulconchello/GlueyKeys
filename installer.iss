@@ -2,7 +2,7 @@
 ; This creates a Windows installer for the application
 
 #define MyAppName "GlueyKeys"
-#define MyAppVersion "0.0.7"
+#define MyAppVersion "0.0.8"
 #define MyAppPublisher "GlueyKeys"
 #define MyAppURL "https://github.com/raulconchello/GlueyKeys"
 #define MyAppExeName "GlueyKeys.exe"
