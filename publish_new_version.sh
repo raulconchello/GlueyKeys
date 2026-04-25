@@ -107,10 +107,10 @@ dotnet publish GlueyKeys/GlueyKeys.csproj \
     -r win-x64 \
     --self-contained true \
     -o publish/ \
-    /p:Version="$NEW_VERSION" \
-    /p:PublishSingleFile=true \
-    /p:IncludeNativeLibrariesForSelfExtract=true \
-    /p:EnableCompressionInSingleFile=true
+    -p:Version="$NEW_VERSION" \
+    -p:PublishSingleFile=true \
+    -p:IncludeNativeLibrariesForSelfExtract=true \
+    -p:EnableCompressionInSingleFile=true
 
 if [[ ! -f publish/GlueyKeys.exe ]]; then
     echo "Error: publish/GlueyKeys.exe was not created"
