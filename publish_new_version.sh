@@ -101,12 +101,21 @@ sed -i "s|AppVersion = \"$CURRENT_VERSION\"|AppVersion = \"$NEW_VERSION\"|" Glue
 sed -i "s|#define MyAppVersion \"$CURRENT_VERSION\"|#define MyAppVersion \"$NEW_VERSION\"|" installer.iss
 
 echo "==> Building..."
+rm -rf publish/
 dotnet publish GlueyKeys/GlueyKeys.csproj \
     -c Release \
     -r win-x64 \
-    --self-contained false \
+    --self-contained true \
     -o publish/ \
-    /p:Version="$NEW_VERSION"
+    /p:Version="$NEW_VERSION" \
+    /p:PublishSingleFile=true \
+    /p:IncludeNativeLibrariesForSelfExtract=true \
+    /p:EnableCompressionInSingleFile=true
+
+if [[ ! -f publish/GlueyKeys.exe ]]; then
+    echo "Error: publish/GlueyKeys.exe was not created"
+    exit 1
+fi
 
 echo "==> Committing..."
 git add "$CSPROJ" GlueyKeys/app.manifest GlueyKeys/Services/InstallationService.cs installer.iss
