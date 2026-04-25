@@ -25,10 +25,12 @@ public partial class App : Application, INotifyPropertyChanged
     public StartupService StartupService { get; } = new();
     public RawInputService RawInputService { get; } = new();
     public InstallationService InstallationService { get; } = new();
+    public UpdateService UpdateService { get; } = new();
 
     // State
     private string? _lastKeyboardDeviceId;
     private bool _isEnabled = true;
+    private bool _isCheckingForUpdates;
     private PressKeyPromptWindow? _pressKeyPrompt;
 
     public bool IsEnabled
@@ -47,12 +49,14 @@ public partial class App : Application, INotifyPropertyChanged
 
     // Commands
     public ICommand ShowSettingsCommand { get; }
+    public ICommand CheckForUpdatesCommand { get; }
     public ICommand ExitCommand { get; }
     public ICommand UninstallCommand { get; }
 
     public App()
     {
         ShowSettingsCommand = new RelayCommand(ShowSettings);
+        CheckForUpdatesCommand = new RelayCommand(() => _ = CheckForUpdatesAsync(true));
         ExitCommand = new RelayCommand(ExitApplication);
         UninstallCommand = new RelayCommand(UninstallApplication);
     }
@@ -81,6 +85,11 @@ public partial class App : Application, INotifyPropertyChanged
 
         // Load settings
         SettingsService.Load();
+
+        if (InstallationService.IsInstalledInProperLocation())
+        {
+            InstallationService.RegisterInWindows();
+        }
 
         // Show setup wizard on first run (only if not installed via installer)
         if (!SettingsService.Settings.SetupCompleted)
@@ -156,6 +165,8 @@ public partial class App : Application, INotifyPropertyChanged
         // Setup tray icon
         _trayIcon = (TaskbarIcon)FindResource("TrayIcon");
         _trayIcon.DataContext = this;
+
+        _ = CheckForUpdatesAsync(false);
     }
 
     private void OnKeyboardInput(object? sender, KeyboardInputEventArgs e)
@@ -254,6 +265,78 @@ public partial class App : Application, INotifyPropertyChanged
 
         if (_mainWindow.WindowState == WindowState.Minimized)
             _mainWindow.WindowState = WindowState.Normal;
+    }
+
+    private async Task CheckForUpdatesAsync(bool manual)
+    {
+        if (_isCheckingForUpdates)
+            return;
+
+        if (!manual && !UpdateService.ShouldCheckForUpdates(SettingsService.Settings.LastUpdateCheckUtc))
+            return;
+
+        _isCheckingForUpdates = true;
+
+        try
+        {
+            SettingsService.UpdateSettings(s => s.LastUpdateCheckUtc = DateTime.UtcNow);
+
+            var result = await UpdateService.CheckForUpdatesAsync();
+            if (!result.IsUpdateAvailable)
+            {
+                if (manual)
+                {
+                    var message = string.IsNullOrEmpty(result.ErrorMessage)
+                        ? $"GlueyKeys is up to date.\n\nCurrent version: {UpdateService.CurrentVersion}"
+                        : $"Could not check for updates.\n\n{result.ErrorMessage}";
+
+                    MessageBox.Show(
+                        message,
+                        "GlueyKeys Updates",
+                        MessageBoxButton.OK,
+                        string.IsNullOrEmpty(result.ErrorMessage) ? MessageBoxImage.Information : MessageBoxImage.Warning);
+                }
+
+                return;
+            }
+
+            var updateNow = MessageBox.Show(
+                $"GlueyKeys {result.LatestVersion} is available.\n\n" +
+                $"Current version: {UpdateService.CurrentVersion}\n\n" +
+                "Update now? The app will close and restart automatically.",
+                "GlueyKeys Update Available",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Information);
+
+            if (updateNow != MessageBoxResult.Yes)
+                return;
+
+            var downloadedExePath = await UpdateService.DownloadUpdateAsync(result);
+            var targetExePath = InstallationService.GetInstalledExePath();
+
+            if (!File.Exists(targetExePath))
+            {
+                targetExePath = Environment.ProcessPath ?? targetExePath;
+            }
+
+            UpdateService.LaunchUpdateInstaller(downloadedExePath, targetExePath);
+            ExitApplication();
+        }
+        catch (Exception ex)
+        {
+            if (manual)
+            {
+                MessageBox.Show(
+                    $"Could not update GlueyKeys.\n\n{ex.Message}",
+                    "GlueyKeys Update Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+        finally
+        {
+            _isCheckingForUpdates = false;
+        }
     }
 
     private void UninstallApplication()

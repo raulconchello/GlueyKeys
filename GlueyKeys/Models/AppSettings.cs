@@ -7,6 +7,7 @@ public class AppSettings
     public bool IsEnabled { get; set; } = true;
     public bool RunAtStartup { get; set; } = false;
     public bool ShowNotifications { get; set; } = true;
+    public DateTime? LastUpdateCheckUtc { get; set; }
     public List<KeyboardMapping> KeyboardMappings { get; set; } = new();
 
     public KeyboardMapping? GetMapping(string deviceId)
