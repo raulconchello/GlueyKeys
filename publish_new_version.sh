@@ -100,6 +100,10 @@ sed -i "s|AppVersion = \"$CURRENT_VERSION\"|AppVersion = \"$NEW_VERSION\"|" Glue
 # installer.iss
 sed -i "s|#define MyAppVersion \"$CURRENT_VERSION\"|#define MyAppVersion \"$NEW_VERSION\"|" installer.iss
 
+# website download URLs
+OLD_TAG="v$CURRENT_VERSION"
+sed -i "s|/releases/download/$OLD_TAG/GlueyKeys.exe|/releases/download/$TAG/GlueyKeys.exe|g" web/index.html
+
 echo "==> Building..."
 rm -rf publish/
 dotnet publish GlueyKeys/GlueyKeys.csproj \
@@ -118,7 +122,7 @@ if [[ ! -f publish/GlueyKeys.exe ]]; then
 fi
 
 echo "==> Committing..."
-git add "$CSPROJ" GlueyKeys/app.manifest GlueyKeys/Services/InstallationService.cs installer.iss
+git add "$CSPROJ" GlueyKeys/app.manifest GlueyKeys/Services/InstallationService.cs installer.iss web/index.html
 git commit -m "Release $TAG"
 
 echo "==> Pushing..."
@@ -129,13 +133,6 @@ gh release create "$TAG" \
     publish/GlueyKeys.exe \
     --title "GlueyKeys $TAG" \
     --notes "$DESCRIPTION"
-
-echo "==> Updating download URLs in website..."
-OLD_TAG="v$CURRENT_VERSION"
-sed -i "s|/releases/download/$OLD_TAG/GlueyKeys.exe|/releases/download/$TAG/GlueyKeys.exe|g" web/index.html
-git add web/index.html
-git commit -m "Update download links to $TAG"
-git push
 
 echo ""
 echo "Done! Released $TAG"
