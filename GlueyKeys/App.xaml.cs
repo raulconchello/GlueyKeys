@@ -98,7 +98,16 @@ public partial class App : Application, INotifyPropertyChanged
             if (wizard.ShowDialog() == true)
             {
                 // Install the application to proper location
-                InstallationService.InstallApplication();
+                if (!InstallationService.InstallApplication())
+                {
+                    MessageBox.Show(
+                        "GlueyKeys could not install itself to your user programs folder.",
+                        "Installation Error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    Shutdown();
+                    return;
+                }
 
                 // Create shortcuts if requested
                 if (wizard.CreateDesktopShortcut)
@@ -114,7 +123,7 @@ public partial class App : Application, INotifyPropertyChanged
                 SettingsService.UpdateSettings(s =>
                 {
                     s.SetupCompleted = true;
-                    s.FirstRunPromptShown = true;
+                    s.FirstRunPromptShown = false;
                     s.RunAtStartup = wizard.RunAtStartup;
                     s.ShowNotifications = wizard.ShowNotifications;
                     s.IsEnabled = wizard.EnableSwitching;
@@ -126,7 +135,14 @@ public partial class App : Application, INotifyPropertyChanged
                 _isEnabled = wizard.EnableSwitching;
                 NotificationService.Enabled = wizard.ShowNotifications;
 
+                if (!InstallationService.IsInstalledInProperLocation())
+                {
+                    RestartFromInstalledLocation();
+                    return;
+                }
+
                 // Show "press key" prompt after setup
+                SettingsService.UpdateSettings(s => s.FirstRunPromptShown = true);
                 _pressKeyPrompt = new PressKeyPromptWindow();
                 _pressKeyPrompt.Show();
             }
@@ -265,6 +281,37 @@ public partial class App : Application, INotifyPropertyChanged
 
         if (_mainWindow.WindowState == WindowState.Minimized)
             _mainWindow.WindowState = WindowState.Normal;
+    }
+
+    private void RestartFromInstalledLocation()
+    {
+        var installedExePath = InstallationService.GetInstalledExePath();
+        if (!File.Exists(installedExePath))
+        {
+            MessageBox.Show(
+                "GlueyKeys was installed, but the installed executable could not be found.",
+                "Installation Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            Shutdown();
+            return;
+        }
+
+        _trayIcon?.Dispose();
+        RawInputService.Dispose();
+        NotificationService.ClearNotifications();
+        _mutex?.ReleaseMutex();
+        _mutex?.Dispose();
+        _mutex = null;
+
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = installedExePath,
+            WorkingDirectory = Path.GetDirectoryName(installedExePath) ?? string.Empty,
+            UseShellExecute = true
+        });
+
+        Shutdown();
     }
 
     private async Task CheckForUpdatesAsync(bool manual)
