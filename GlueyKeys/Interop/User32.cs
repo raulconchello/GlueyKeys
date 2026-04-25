@@ -28,6 +28,9 @@ public static class User32
     [DllImport("user32.dll", SetLastError = true)]
     public static extern bool PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
+    [DllImport("user32.dll")]
+    public static extern short GetAsyncKeyState(int vKey);
+
     public const uint WM_INPUTLANGCHANGEREQUEST = 0x0050;
     public const int HWND_BROADCAST = 0xFFFF;
 
