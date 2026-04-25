@@ -10,7 +10,7 @@
     <AssemblyName>GlueyKeys</AssemblyName>
     <RootNamespace>GlueyKeys</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>0.0.8</Version>
+    <Version>0.0.9</Version>
   </PropertyGroup>
 
   <ItemGroup>
