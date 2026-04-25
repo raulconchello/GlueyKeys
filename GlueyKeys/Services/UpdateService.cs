@@ -98,7 +98,7 @@ public class UpdateService
         return downloadPath;
     }
 
-    public void LaunchUpdateInstaller(string downloadedExePath, string targetExePath)
+    public void LaunchUpdateInstaller(string downloadedExePath, string targetExePath, string version)
     {
         var scriptPath = Path.Combine(
             Path.GetDirectoryName(downloadedExePath) ?? Path.GetTempPath(),
@@ -114,6 +114,9 @@ $source = @'
 $target = @'
 {{targetExePath}}
 '@
+$version = @'
+{{version}}
+'@
 
 try {
     Wait-Process -Id $processId -Timeout 60 -ErrorAction SilentlyContinue
@@ -122,7 +125,7 @@ try {
 
 Start-Sleep -Milliseconds 500
 Copy-Item -LiteralPath $source -Destination $target -Force
-Start-Process -FilePath $target
+Start-Process -FilePath $target -ArgumentList @('--updated', $version)
 Start-Sleep -Seconds 2
 Remove-Item -LiteralPath $source -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath $PSCommandPath -Force -ErrorAction SilentlyContinue

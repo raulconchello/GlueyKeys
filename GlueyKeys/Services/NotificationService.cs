@@ -44,6 +44,18 @@ public class NotificationService
         }
     }
 
+    public void ShowUpdateInstalled(string version)
+    {
+        try
+        {
+            ShowToast("GlueyKeys updated", $"Version {version} is now installed.");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to show update notification: {ex.Message}");
+        }
+    }
+
     private void ShowToast(string title, string message)
     {
         var template = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);

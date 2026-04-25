@@ -65,6 +65,7 @@ public partial class App : Application
         }
 
         base.OnStartup(e);
+        var updatedVersion = GetUpdatedVersion(e.Args);
 
         // Load settings
         SettingsService.Load();
@@ -161,6 +162,11 @@ public partial class App : Application
         // Setup tray icon
         _trayIcon = (TaskbarIcon)FindResource("TrayIcon");
         _trayIcon.DataContext = this;
+
+        if (!string.IsNullOrWhiteSpace(updatedVersion))
+        {
+            NotificationService.ShowUpdateInstalled(updatedVersion);
+        }
 
         _ = CheckForUpdatesAsync(false);
     }
@@ -343,7 +349,7 @@ public partial class App : Application
                 targetExePath = Environment.ProcessPath ?? targetExePath;
             }
 
-            UpdateService.LaunchUpdateInstaller(downloadedExePath, targetExePath);
+            UpdateService.LaunchUpdateInstaller(downloadedExePath, targetExePath, result.LatestVersion ?? "latest");
             ExitApplication();
         }
         catch (Exception ex)
@@ -361,6 +367,17 @@ public partial class App : Application
         {
             _isCheckingForUpdates = false;
         }
+    }
+
+    private static string? GetUpdatedVersion(string[] args)
+    {
+        for (var i = 0; i < args.Length - 1; i++)
+        {
+            if (string.Equals(args[i], "--updated", StringComparison.OrdinalIgnoreCase))
+                return args[i + 1];
+        }
+
+        return null;
     }
 
     private void UninstallApplication()
