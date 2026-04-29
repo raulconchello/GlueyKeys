@@ -52,6 +52,7 @@ public partial class App : Application
     private const ushort VK_OEM_102 = 0xE2;
 
     private static Mutex? _mutex;
+    private static readonly TimeSpan ShortcutInputSuppression = TimeSpan.FromMilliseconds(750);
     private TaskbarIcon? _trayIcon;
     private MainWindow? _mainWindow;
 
@@ -69,6 +70,7 @@ public partial class App : Application
     private string? _lastKeyboardDeviceId;
     private bool _isCheckingForUpdates;
     private PressKeyPromptWindow? _pressKeyPrompt;
+    private DateTime _suppressShortcutInputUntil = DateTime.MinValue;
 
     // Commands
     public ICommand ShowSettingsCommand { get; }
@@ -225,6 +227,12 @@ public partial class App : Application
         // Mark this keyboard as active (it's definitely connected since it sent input)
         KeyboardEnumerationService.MarkAsActive(keyboard.DeviceId);
 
+        if (IsCommandModifierKey(e.VirtualKey))
+        {
+            _suppressShortcutInputUntil = DateTime.UtcNow.Add(ShortcutInputSuppression);
+            return;
+        }
+
         if (!ShouldHandleLayoutSwitch(e.VirtualKey))
             return;
 
@@ -261,9 +269,12 @@ public partial class App : Application
         }
     }
 
-    private static bool ShouldHandleLayoutSwitch(ushort virtualKey)
+    private bool ShouldHandleLayoutSwitch(ushort virtualKey)
     {
-        if (IsWindowsKeyDown())
+        if (DateTime.UtcNow < _suppressShortcutInputUntil)
+            return false;
+
+        if (IsCommandShortcutDown())
             return false;
 
         if (IsNonTextKey(virtualKey))
@@ -272,9 +283,19 @@ public partial class App : Application
         return IsTypingKey(virtualKey);
     }
 
-    private static bool IsWindowsKeyDown()
+    private static bool IsCommandShortcutDown()
     {
-        return IsKeyDown(VK_LWIN) || IsKeyDown(VK_RWIN);
+        return IsKeyDown(VK_LWIN) || IsKeyDown(VK_RWIN) ||
+               IsKeyDown(VK_CONTROL) || IsKeyDown(VK_LCONTROL) || IsKeyDown(VK_RCONTROL) ||
+               IsKeyDown(VK_MENU) || IsKeyDown(VK_LMENU) || IsKeyDown(VK_RMENU);
+    }
+
+    private static bool IsCommandModifierKey(ushort virtualKey)
+    {
+        return virtualKey is
+            VK_LWIN or VK_RWIN or
+            VK_CONTROL or VK_LCONTROL or VK_RCONTROL or
+            VK_MENU or VK_LMENU or VK_RMENU;
     }
 
     private static bool IsKeyDown(int virtualKey)
